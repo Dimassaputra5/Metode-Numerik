@@ -2,4 +2,6 @@
 *.gz
 *.log
 *.out
-
+*.bib
+*.blg
+*.bbl
