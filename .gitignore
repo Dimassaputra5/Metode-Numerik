@@ -5,3 +5,17 @@
 *.bib
 *.blg
 *.bbl
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+*.lof
+*.lot
+*.idx
+*.ilg
+*.ind
+*.dvi
+*.ps
