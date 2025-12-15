@@ -1,0 +1,96 @@
+\documentclass[conference]{IEEEtran}
+
+% --- Paket Wajib ---
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{hyperref}
+
+% --- Judul & Penulis ---
+\title{Implementasi Regresi Linear Berganda dengan Optimasi Gradient Descent untuk Prediksi Harga Properti}
+
+\author{\IEEEauthorblockN{Muhamad Dimas Saputra}
+\IEEEauthorblockA{\textit{Teknik Informatika/Sains dan Teknologi} \\
+\textit{UNIVERSITAS ISLAM NEGERI SYARIF HIDAYATULLAH JAKARTA}\\
+Tangerang Selatan, Indonesia \\
+muhamad.dimas24@mhs.uinjkt.ac.id}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+okr
+\end{abstract}
+
+% --- Kata Kunci ---
+\begin{IEEEkeywords}
+Prediksi Harga Rumah, Regresi Linear, Gradient Descent, Machine Learning, Metode Numerik.
+\end{IEEEkeywords}
+
+% --- BAB I ---
+\section{Pendahuluan}
+Sektor properti memainkan peran penting dalam perekonomian. Namun, prediksi harga yang akurat sulit dilakukan secara manual karena banyaknya variabel yang berpengaruh, seperti luas tanah, jumlah kamar, dan lokasi \cite{Hallan2025}.
+
+Pendekatan \textit{Machine Learning} menawarkan solusi untuk masalah ini. Penelitian sebelumnya oleh Siregar et al. menunjukkan bahwa regresi linear mampu memberikan estimasi yang baik dengan memanfaatkan variabel fisik bangunan \cite{Siregar2023}. Dalam penelitian ini, penulis berfokus pada implementasi algoritma optimasi \textit{Gradient Descent} untuk menyelesaikan fungsi biaya secara numerik.
+
+% --- BAB II ---
+\section{Landasan Teori}
+
+\subsection{Model Regresi Linear}
+Secara matematis, prediksi harga rumah ($\hat{y}$) dimodelkan sebagai kombinasi linear dari fitur input ($x$). Persamaan hipotesis didefinisikan sebagai:
+\begin{equation}
+    h_\theta(x) = \theta_0 + \theta_1 x_1 + \theta_2 x_2 + \dots + \theta_n x_n
+\end{equation}
+Dimana $\theta$ adalah parameter bobot yang akan dipelajari oleh model.
+
+\subsection{Fungsi Biaya (Cost Function)}
+Untuk mengukur kinerja model, digunakan \textit{Mean Squared Error} (MSE). Fungsi biaya $J(\theta)$ bertujuan untuk meminimalkan selisih kuadrat antara prediksi dan nilai asli \cite{Ng2022}:
+\begin{equation}
+    J(\theta) = \frac{1}{2m} \sum_{i=1}^{m} (h_\theta(x^{(i)}) - y^{(i)})^2
+    \label{eq:cost_function}
+\end{equation}
+
+\subsection{Algoritma Gradient Descent}
+Parameter $\theta$ diperbarui secara iteratif untuk mencapai konvergensi global minimum menggunakan aturan pembaruan:
+\begin{equation}
+    \theta_j := \theta_j - \alpha \frac{\partial}{\partial \theta_j} J(\theta)
+\end{equation}
+Di mana $\alpha$ adalah \textit{learning rate} yang menentukan seberapa besar langkah yang diambil setiap iterasi.
+
+% --- BAB III ---
+\section{Metodologi}
+
+\subsection{Pra-pemrosesan Data}
+Sebelum dilakukan pelatihan, data mentah harus melalui tahap pra-pemrosesan. Salah satu tahapan krusial adalah standarisasi fitur (\textit{Feature Scaling}) menggunakan teknik \textit{Z-score normalization}:
+\begin{equation}
+    x' = \frac{x - \mu}{\sigma}
+\end{equation}
+Hal ini penting agar kontur fungsi biaya menjadi lebih simetris, sehingga \textit{Gradient Descent} dapat konvergen lebih cepat \cite{Hallan2025}.
+
+% --- BAB IV ---
+\section{Hasil dan Pembahasan}
+Implementasi dilakukan menggunakan bahasa Python dengan pustaka NumPy. Grafik penurunan \textit{Loss} dapat dilihat pada Gambar \ref{fig:loss_graph}.
+
+% Placeholder Gambar (Dibuat komentar agar tidak error jika file tidak ada)
+\begin{figure}[htbp]
+    \centering
+    % \includegraphics[width=0.8\linewidth]{loss_plot.png} 
+    \caption{Ilustrasi Grafik Penurunan Cost Function (Contoh)}
+    \label{fig:loss_graph}
+\end{figure}
+
+% --- BAB V ---
+\section{Kesimpulan}
+Berdasarkan hasil eksperimen, algoritma Regresi Linear dengan optimasi Gradient Descent terbukti mampu memprediksi harga rumah dengan tingkat error yang dapat diterima.
+
+% --- Daftar Pustaka ---
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
