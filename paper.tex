@@ -10,7 +10,6 @@
 \usepackage{float}
 \usepackage{hyperref}
 
-% --- Judul & Penulis ---
 \title{Implementasi Regresi Linear Berganda dengan Optimasi Gradient Descent untuk Prediksi Harga Properti}
 
 \author{\IEEEauthorblockN{Muhamad Dimas Saputra}
@@ -28,18 +27,88 @@ muhamad.dimas24@mhs.uinjkt.ac.id}
 okr
 \end{abstract}
 
-% --- Kata Kunci ---
 \begin{IEEEkeywords}
 Prediksi Harga Rumah, Regresi Linear, Gradient Descent, Machine Learning, Metode Numerik.
 \end{IEEEkeywords}
 
-% --- BAB I ---
 \section{Pendahuluan}
-Sektor properti memainkan peran penting dalam perekonomian. Namun, prediksi harga yang akurat sulit dilakukan secara manual karena banyaknya variabel yang berpengaruh, seperti luas tanah, jumlah kamar, dan lokasi \cite{Hallan2025}.
 
-Pendekatan \textit{Machine Learning} menawarkan solusi untuk masalah ini. Penelitian sebelumnya oleh Siregar et al. menunjukkan bahwa regresi linear mampu memberikan estimasi yang baik dengan memanfaatkan variabel fisik bangunan \cite{Siregar2023}. Dalam penelitian ini, penulis berfokus pada implementasi algoritma optimasi \textit{Gradient Descent} untuk menyelesaikan fungsi biaya secara numerik.
+\subsection{Latar Belakang}
+Sektor properti memegang peranan vital dalam perekonomian global, 
+namun prediksi harga properti tetap menjadi tantangan yang kompleks karena dipengaruhi oleh berbagai faktor seperti ukuran bangunan, 
+jumlah kamar, lokasi, dan kondisi properti itu sendiri. 
+Rumah tidak hanya berfungsi sebagai kebutuhan pokok untuk tempat berlindung, 
+tetapi juga dianggap sebagai bentuk investasi masa depan yang strategis karena adanya fluktuasi harga yang terus meningkat seiring waktu. 
+Oleh karena itu, diperlukan metode yang efektif untuk memprediksi harga properti secara akurat guna mendukung pengambilan keputusan bagi pembeli, 
+penjual, maupun investor.
 
-% --- BAB II ---
+Perkembangan teknologi telah mendorong penggunaan metode berbasis 
+\textit{machine learning} untuk menyelesaikan masalah prediksi ini, 
+di mana komputer dapat belajar dari data historis tanpa harus diprogram secara eksplisit. 
+Salah satu pendekatan yang terbukti efektif adalah Regresi Linear Berganda 
+(\textit{Multiple Linear Regression}). 
+Penelitian sebelumnya menunjukkan bahwa metode ini memungkinkan pemahaman yang lebih mendalam mengenai 
+keterkaitan antara variabel fisik bangunan—seperti luas tanah dan luas bangunan—dengan nilai jual 
+rumah, serta mampu memberikan prediksi dengan tingkat akurasi yang memuaskan 
+\cite{Siregar2023}.
+
+Secara matematis, tujuan dari metode ini adalah memilih parameter model 
+($\theta$) yang dapat meminimalkan fungsi biaya (\textit{Cost Function}) 
+atau selisih kuadrat antara prediksi dan nilai aktual. Untuk menyelesaikan masalah optimasi ini, 
+digunakan algoritma \textit{Gradient Descent}, yang bekerja secara iteratif 
+memperbarui parameter dengan mengambil langkah ke arah penurunan tercuram 
+(\textit{steepest decrease}) dari fungsi biaya hingga mencapai konvergensi 
+\cite{Ng2022}.
+
+Selain pemilihan algoritma, tahapan pra-pemrosesan data juga sangat krusial. 
+Data mentah seringkali memiliki skala yang berbeda-beda yang dapat menghambat kinerja model. 
+Penelitian Hallan dan Fajri menekankan bahwa proses standarisasi fitur (\textit{feature standardization}) 
+sangat penting untuk memastikan konsistensi data, yang pada akhirnya membantu algoritma berbasis 
+\textit{gradient descent} bekerja lebih efisien dan menghasilkan prediksi yang lebih akurat 
+\cite{Hallan2025}. 
+
+Berdasarkan landasan tersebut, penelitian ini akan mengimplementasikan Regresi Linear Berganda dengan optimasi 
+\textit{Gradient Descent} yang dibangun dari awal (\textit{from scratch}) 
+untuk memprediksi harga properti.
+
+\subsection{Rumusan Masalah}
+Berdasarkan latar belakang di atas, rumusan masalah dalam penelitian ini adalah:
+\begin{enumerate}
+    \item Bagaimana memodelkan hubungan antara variabel independen (luas bangunan, jumlah kamar, dan jarak lokasi) terhadap harga rumah menggunakan persamaan Regresi Linear Berganda
+    $ Y = w_0 + w_1 x_1 + w_2 x_2 + \dots + w_n x_n + \epsilon$?
+    \item Bagaimana penerapan algoritma \textit{Gradient Descent} secara iteratif untuk memperbarui 
+    parameter bobot $\theta$ guna meminimalkan fungsi biaya ($J(\theta)$)?
+    \item Seberapa besar pengaruh tahapan pra-pemrosesan data, khususnya standarisasi
+    fitur, dalam meningkatkan efisiensi dan akurasi model regresi linear?
+\end{enumerate}
+
+\subsection{Tujuan Penelitian}
+Tujuan dari penelitian ini adalah:
+\begin{enumerate}
+    \item Membangun model prediksi harga properti menggunakan algoritma \textit{Linear Regression} 
+    untuk menganalisis pengaruh berbagai faktor fisik terhadap harga.
+    \item Mengimplementasikan algoritma optimasi \textit{Gradient Descent} secara manual untuk mencari nilai
+     minimum dari fungsi \textit{Least Squares}.
+    \item Mengevaluasi kinerja model yang dihasilkan menggunakan metrik \textit{Mean Squared Error} 
+    (MSE) untuk mengukur rata-rata kesalahan prediksi antara nilai aktual dan nilai prediksi.
+\end{enumerate}
+
+\subsection{Batasan Masalah}
+Agar pembahasan lebih terarah, penulis menetapkan batasan masalah sebagai berikut:
+\begin{itemize}
+    \item \text{Metode Algoritma:} Penelitian ini berfokus pada penggunaan algoritma Regresi Linear Berganda yang 
+    diselesaikan menggunakan metode numerik \textit{Gradient Descent}, bukan menggunakan 
+    solusi analitik tertutup (\textit{Normal Equations}).
+    \item \text{Variabel Data:} Variabel yang digunakan untuk prediksi dibatasi pada fitur fisik dan 
+    lokasi yang relevan, seperti luas bangunan, jumlah kamar, dan area terkait, sebagaimana divalidasi 
+    signifikansinya dalam penelitian terdahulu.
+    \item \text{Teknik Pra-pemrosesan:} Data akan melalui proses standarisasi (\textit{StandardScaler}) 
+    sebelum pelatihan untuk menangani perbedaan skala antar fitur, guna mempercepat konvergensi 
+    algoritma.
+    \item \text{Implementasi:} Kode program dibangun menggunakan bahasa Python dengan operasi matriks dasar 
+    (NumPy), tanpa menggunakan fungsi pelatihan instan dari \textit{library} pembelajaran mesin tingkat tinggi.
+\end{itemize}
+
 \section{Landasan Teori}
 
 \subsection{Model Regresi Linear}
