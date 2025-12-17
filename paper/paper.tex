@@ -26,143 +26,97 @@ muhamad.dimas24@mhs.uinjkt.ac.id}
 
 % --- Abstrak ---
 \begin{abstract}
-Sektor properti memiliki peran vital dalam ekonomi, namun penentuan harga rumah seringkali menjadi tantangan kompleks karena dipengaruhi oleh banyak faktor fisik. Penelitian ini bertujuan untuk mengimplementasikan metode Regresi Linear Berganda menggunakan algoritma \textit{Gradient Descent} yang dibangun secara manual (\textit{from scratch}) untuk memprediksi harga rumah. Data yang digunakan berasal dari dataset perumahan standar yang telah melalui proses pra-pemrosesan dan standarisasi. Hasil pengujian menunjukkan bahwa model mampu meminimalkan \textit{Mean Squared Error} (MSE) secara iteratif menuju konvergensi.
+Sektor properti memiliki peran vital dalam ekonomi, namun penentuan harga rumah seringkali menjadi tantangan kompleks karena dipengaruhi oleh banyak faktor fisik. Penelitian ini bertujuan untuk mengimplementasikan metode Regresi Linear Berganda menggunakan pendekatan \textit{Normal Equation} untuk memprediksi harga rumah di Jakarta Selatan. Berbeda dengan pendekatan iteratif seperti \textit{Gradient Descent}, \textit{Normal Equation} memberikan solusi analitik langsung untuk menemukan parameter model yang optimal tanpa memerlukan penentuan \textit{learning rate} atau iterasi berulang. Data yang digunakan mencakup fitur luas tanah, luas bangunan, jumlah kamar tidur, jumlah kamar mandi, dan ketersediaan garasi. Hasil pengujian menunjukkan bahwa model mampu menghasilkan prediksi dengan nilai \textit{R-squared} ($R^2$) sebesar 0.836 (83.6\%), yang mengindikasikan bahwa model memiliki performa sangat baik dalam menjelaskan variasi harga properti. Tingkat kesalahan prediksi yang diukur dengan \textit{Root Mean Squared Error} (RMSE) adalah sebesar 3.97 miliar rupiah.
 \end{abstract}
 
 % --- Kata Kunci ---
 \begin{IEEEkeywords}
-Prediksi Harga Rumah, Regresi Linear, Gradient Descent, Machine Learning, Metode Numerik.
+Prediksi Harga Rumah, Regresi Linear, Normal Equation, Jakarta Selatan, Machine Learning.
 \end{IEEEkeywords}
 
 % --- BAB I ---
 \section{Pendahuluan}
 
 \subsection{Latar Belakang}
-Sektor properti memegang peranan vital dalam perekonomian global, namun prediksi harga properti tetap menjadi tantangan yang kompleks karena dipengaruhi oleh berbagai faktor seperti ukuran bangunan, jumlah kamar, lokasi, dan kondisi properti itu sendiri. Rumah tidak hanya berfungsi sebagai kebutuhan pokok untuk tempat berlindung, tetapi juga dianggap sebagai bentuk investasi masa depan yang strategis karena adanya fluktuasi harga yang terus meningkat seiring waktu. Oleh karena itu, diperlukan metode yang efektif untuk memprediksi harga properti secara akurat guna mendukung pengambilan keputusan bagi pembeli, penjual, maupun investor.
+Sektor properti memegang peranan vital dalam perekonomian global. Rumah tidak hanya berfungsi sebagai kebutuhan pokok, tetapi juga instrumen investasi yang strategis karena nilainya yang cenderung meningkat \cite{Siregar2023}. Namun, memprediksi harga properti secara akurat merupakan tantangan tersendiri karena dipengaruhi oleh berbagai variabel fisik seperti luas bangunan, jumlah kamar, dan fasilitas pendukung lainnya \cite{Hallan2025}.
 
-Perkembangan teknologi telah mendorong penggunaan metode berbasis \textit{machine learning} untuk menyelesaikan masalah prediksi ini, di mana komputer dapat belajar dari data historis tanpa harus diprogram secara eksplisit. Salah satu pendekatan yang terbukti efektif adalah Regresi Linear Berganda (\textit{Multiple Linear Regression}). Penelitian sebelumnya menunjukkan bahwa metode ini memungkinkan pemahaman yang lebih mendalam mengenai keterkaitan antara variabel fisik bangunan—seperti luas tanah dan luas bangunan—dengan nilai jual rumah, serta mampu memberikan prediksi dengan tingkat akurasi yang memuaskan \cite{Siregar2023}.
+Pendekatan \textit{Machine Learning} menawarkan solusi untuk masalah prediksi ini. Salah satu metode yang efektif adalah Regresi Linear Berganda, yang memodelkan hubungan linear antara variabel independen (fitur rumah) dan variabel dependen (harga). Penelitian terdahulu menunjukkan bahwa metode ini mampu memberikan estimasi harga yang dapat diandalkan \cite{Hallan2025, Siregar2023}.
 
-Secara matematis, tujuan dari metode ini adalah memilih parameter bobot ($w$) yang dapat meminimalkan fungsi biaya (\textit{Cost Function}) atau selisih kuadrat antara prediksi dan nilai aktual. Untuk menyelesaikan masalah optimasi ini, digunakan algoritma \textit{Gradient Descent}, yang bekerja secara iteratif memperbarui parameter dengan mengambil langkah ke arah penurunan tercuram (\textit{steepest decrease}) dari fungsi biaya hingga mencapai konvergensi \cite{Ng2022}.
-
-Selain pemilihan algoritma, tahapan pra-pemrosesan data juga sangat krusial. Data mentah seringkali memiliki skala yang berbeda-beda yang dapat menghambat kinerja model. Penelitian Hallan dan Fajri menekankan bahwa proses standarisasi fitur (\textit{feature standardization}) sangat penting untuk memastikan konsistensi data, yang pada akhirnya membantu algoritma berbasis \textit{gradient descent} bekerja lebih efisien dan menghasilkan prediksi yang lebih akurat \cite{Hallan2025}. 
-
-Berdasarkan landasan tersebut, penelitian ini akan mengimplementasikan Regresi Linear Berganda dengan optimasi \textit{Gradient Descent} yang dibangun dari awal (\textit{from scratch}) untuk memprediksi harga properti.
+Dalam penelitian ini, optimasi model dilakukan menggunakan metode \textit{Normal Equation}. Berbeda dengan algoritma \textit{Gradient Descent} yang memperbarui parameter secara iteratif dan memerlukan penyetelan \textit{hyperparameter} seperti \textit{learning rate}, \textit{Normal Equation} menyelesaikan masalah \textit{Least Squares} secara analitik menggunakan operasi matriks. Metode ini efisien untuk dataset dengan jumlah fitur yang tidak terlalu besar, seperti dataset harga rumah Jakarta Selatan yang digunakan dalam studi ini.
 
 \subsection{Rumusan Masalah}
-Berdasarkan latar belakang di atas, rumusan masalah dalam penelitian ini adalah:
+Berdasarkan latar belakang tersebut, rumusan masalah penelitian ini adalah:
 \begin{enumerate}
-    \item Bagaimana memodelkan hubungan antara variabel independen (luas bangunan, jumlah kamar, dan jarak lokasi) terhadap harga rumah menggunakan persamaan fungsi Regresi Linear:
-    \begin{equation}
-        Y = w_0 + w_1 x_1 + w_2 x_2 + \dots + w_n x_n
-    \end{equation}
-    \item Bagaimana penerapan algoritma \textit{Gradient Descent} secara iteratif untuk memperbarui parameter bobot $w$ guna meminimalkan fungsi biaya ($J(w)$)?
-    \item Seberapa besar pengaruh tahapan pra-pemrosesan data, khususnya standarisasi fitur, dalam meningkatkan efisiensi dan akurasi model regresi linear?
+    \item Bagaimana penerapan metode \textit{Normal Equation} dalam Regresi Linear Berganda untuk memprediksi harga rumah?
+    \item Seberapa besar pengaruh fitur fisik (Luas Tanah, Luas Bangunan, Jumlah Kamar, Garasi) terhadap harga rumah di Jakarta Selatan?
+    \item Bagaimana kinerja model yang dihasilkan jika diukur dengan metrik evaluasi $R^2$ dan RMSE?
 \end{enumerate}
 
 \subsection{Tujuan Penelitian}
 Tujuan dari penelitian ini adalah:
 \begin{enumerate}
-    \item Membangun model prediksi harga properti menggunakan algoritma \textit{Linear Regression} untuk menganalisis pengaruh berbagai faktor fisik terhadap harga.
-    \item Mengimplementasikan algoritma optimasi \textit{Gradient Descent} secara manual untuk mencari nilai minimum dari fungsi \textit{Least Squares}.
-    \item Mengevaluasi kinerja model yang dihasilkan menggunakan metrik \textit{Mean Squared Error} (MSE) untuk mengukur rata-rata kesalahan prediksi antara nilai aktual dan nilai prediksi.
+    \item Mengimplementasikan algoritma Regresi Linear Berganda dengan solusi analitik \textit{Normal Equation}.
+    \item Membangun model prediksi harga rumah berdasarkan dataset properti Jakarta Selatan.
+    \item Mengevaluasi akurasi model untuk mengetahui tingkat kesalahan prediksi dan kecocokan model terhadap data.
 \end{enumerate}
 
 \subsection{Batasan Masalah}
-Agar pembahasan lebih terarah, penulis menetapkan batasan masalah sebagai berikut:
 \begin{itemize}
-    \item \textbf{Metode Algoritma:} Penelitian ini berfokus pada penggunaan algoritma Regresi Linear Berganda yang diselesaikan menggunakan metode numerik \textit{Gradient Descent}, bukan menggunakan solusi analitik tertutup (\textit{Normal Equations}).
-    \item \textbf{Variabel Data:} Variabel yang digunakan untuk prediksi dibatasi pada fitur fisik dan lokasi yang relevan, seperti luas bangunan, jumlah kamar, dan area terkait, sebagaimana divalidasi signifikansinya dalam penelitian terdahulu.
-    \item \textbf{Teknik Pra-pemrosesan:} Data akan melalui proses standarisasi (\textit{StandardScaler}) sebelum pelatihan untuk menangani perbedaan skala antar fitur, guna mempercepat konvergensi algoritma.
-    \item \textbf{Implementasi:} Kode program dibangun menggunakan bahasa Python dengan operasi matriks dasar (NumPy), tanpa menggunakan fungsi pelatihan instan dari \textit{library} pembelajaran mesin tingkat tinggi.
+    \item \textbf{Metode:} Menggunakan \textit{Normal Equation} untuk mencari parameter bobot optimal $\theta$.
+    \item \textbf{Dataset:} Data harga rumah di Jakarta Selatan dengan fitur: Luas Tanah (LT), Luas Bangunan (LB), Jumlah Kamar Tidur (JKT), Jumlah Kamar Mandi (JKM), dan Garasi (GRS).
+    \item \textbf{Evaluasi:} Kinerja model diukur menggunakan MSE, RMSE, dan $R^2$ Score.
 \end{itemize}
 
-% --- BAB II ---
 % --- BAB II ---
 \section{Landasan Teori}
 
 \subsection{Regresi Linear Berganda}
-Regresi Linear Berganda (\textit{Multiple Linear Regression}) adalah metode statistik yang digunakan untuk memodelkan hubungan linear antara satu variabel dependen (target) dengan dua atau lebih variabel independen (fitur). Dalam konteks penelitian ini, variabel dependen adalah harga rumah, sedangkan variabel independen adalah karakteristik fisik rumah seperti luas tanah, jumlah kamar, dan lokasi \cite{Siregar2023}.
-
-Secara matematis, jika terdapat $n$ fitur input $x_1, x_2, \dots, x_n$, maka fungsi prediksi $Y$ didefinisikan sebagai kombinasi linear dari bobot parameter $w$:
+Regresi Linear Berganda memodelkan hubungan antara satu variabel dependen $Y$ (harga) dengan beberapa variabel independen $x_1, x_2, \dots, x_n$ (fitur). Persamaan model didefinisikan sebagai:
 \begin{equation}
-    Y(x) = w_0 + w_1 x_1 + w_2 x_2 + \dots + w_n x_n
+    Y = \theta_0 + \theta_1 x_1 + \theta_2 x_2 + \dots + \theta_n x_n
 \end{equation}
-Dimana:
-\begin{itemize}
-    \item $Y(x)$ adalah nilai prediksi (harga rumah).
-    \item $w_0$ adalah bias (\textit{intercept}).
-    \item $w_1, \dots, w_n$ adalah koefisien bobot (\textit{weights}) untuk setiap fitur.
-\end{itemize}
+Dimana $\theta$ adalah parameter bobot yang meminimalkan fungsi biaya.
 
-Untuk menyederhanakan notasi, kita dapat mendefinisikan $x_0 = 1$, sehingga persamaan dapat ditulis dalam bentuk vektor:
+\subsection{Normal Equation}
+\textit{Normal Equation} adalah metode untuk menemukan nilai $\theta$ yang meminimalkan \textit{Cost Function} $J(\theta)$ secara langsung dengan menetapkan turunannya menjadi nol. Solusi analitiknya diberikan oleh persamaan:
 \begin{equation}
-    Y(x) = w^T x
+    \theta = (X^T X)^{-1} X^T y
 \end{equation}
-Dimana $w$ dan $x$ adalah vektor berdimensi $\mathbb{R}^{n+1}$.
+Dimana $X$ adalah matriks desain (termasuk kolom bias) dan $y$ adalah vektor target. Metode ini memberikan solusi eksak untuk masalah \textit{linear least squares} \cite{Ng2022}.
 
-\subsection{Fungsi Biaya (Cost Function)}
-Untuk mengevaluasi seberapa baik model memprediksi data, diperlukan fungsi objektif yang disebut Fungsi Biaya (\textit{Cost Function}). Penelitian ini menggunakan \textit{Mean Squared Error} (MSE) yang mengukur rata-rata kuadrat selisih antara nilai prediksi ($Y$) dan nilai aktual ($y$). 
-
-Berdasarkan teori \textit{Least Squares} yang dijelaskan oleh Ng dan Ma, fungsi biaya $J(w)$ didefinisikan sebagai \cite{Ng2022}:
-\begin{equation}
-    J(w) = \frac{1}{2m} \sum_{i=1}^{m} (Y^{(i)} - y^{(i)})^2
-    \label{eq:cost_function}
-\end{equation}
-Dimana:
-\begin{itemize}
-    \item $m$ adalah jumlah data pelatihan (\textit{training examples}).
-    \item $Y^{(i)}$ adalah hasil prediksi untuk data ke-$i$.
-    \item $y^{(i)}$ adalah label harga asli untuk data ke-$i$.
-    \item Konstanta $\frac{1}{2}$ digunakan untuk memudahkan perhitungan turunan nantinya.
-\end{itemize}
-Tujuan dari pelatihan model adalah mencari nilai vektor $w$ yang meminimalkan $J(w)$.
-
-\subsection{Algoritma Gradient Descent}
-Karena tidak menggunakan solusi analitik tertutup (\textit{Normal Equations}), pencarian nilai minimum $J(w)$ dilakukan menggunakan metode numerik iteratif bernama \textit{Gradient Descent} (Algoritma LMS). Algoritma ini bekerja dengan cara memperbarui nilai parameter $w$ secara bertahap ke arah yang berlawanan dengan gradien fungsi biaya \cite{Ng2022}.
-
-Aturan pembaruan (\textit{update rule}) untuk setiap parameter $w_j$ adalah:
-\begin{equation}
-    w_j := w_j - \alpha \frac{\partial}{\partial w_j} J(w)
-\end{equation}
-Dimana $\alpha$ adalah \textit{learning rate} yang mengontrol ukuran langkah setiap iterasi. Turunan parsial dari fungsi biaya terhadap bobot $w_j$ dapat diturunkan menjadi:
-\begin{equation}
-    \frac{\partial}{\partial w_j} J(w) = \frac{1}{m} \sum_{i=1}^{m} (Y^{(i)} - y^{(i)}) x_j^{(i)}
-\end{equation}
-Proses ini diulang (\textit{looping}) hingga nilai fungsi biaya konvergen atau mencapai batas iterasi yang ditentukan.
-
-\subsection{Pra-pemrosesan Data (Standardisasi)}
-Sebelum data dilatih menggunakan \textit{Gradient Descent}, sangat penting untuk melakukan penskalaan fitur (\textit{Feature Scaling}). Hal ini dikarenakan variabel input memiliki rentang nilai yang sangat berbeda (misalnya, luas rumah dalam ratusan meter persegi, sedangkan jumlah kamar hanya satuan digit).
-
-Penelitian Hallan dan Fajri menunjukkan bahwa tanpa standarisasi, kontur fungsi biaya akan berbentuk elips yang sangat lonjong, yang menyebabkan algoritma \textit{Gradient Descent} lambat mencapai konvergensi atau berosilasi \cite{Hallan2025}. Teknik yang digunakan adalah \textit{Z-score Normalization}:
-\begin{equation}
-    x'_j = \frac{x_j - \mu_j}{\sigma_j}
-\end{equation}
-Dimana $\mu_j$ adalah rata-rata (mean) dari fitur $j$, dan $\sigma_j$ adalah standar deviasi dari fitur $j$. Dengan teknik ini, setiap fitur akan memiliki rata-rata 0 dan standar deviasi 1, sehingga proses optimasi menjadi lebih efisien.
 % --- BAB III ---
 \section{Metodologi}
 
 \subsection{Pra-pemrosesan Data}
-Sebelum dilakukan pelatihan, data mentah harus melalui tahap pra-pemrosesan. Salah satu tahapan krusial adalah standarisasi fitur (\textit{Feature Scaling}) menggunakan teknik \textit{Z-score normalization}:
-\begin{equation}
-    x' = \frac{x - \mu}{\sigma}
-\end{equation}
-Hal ini penting agar kontur fungsi biaya menjadi lebih simetris, sehingga \textit{Gradient Descent} dapat konvergen lebih cepat \cite{Hallan2025}.
+Data mentah melalui beberapa tahapan pra-pemrosesan sebelum pelatihan:
+\begin{enumerate}
+    \item \textbf{Pembersihan Data:} Kolom yang tidak relevan seperti 'KOTA' (karena nilainya seragam 'JAKSEL') dihapus.
+    \item \textbf{Encoding:} Fitur kategorikal 'GRS' (Garasi) diubah menjadi format numerik (1 untuk 'ADA', 0 untuk 'TIDAK ADA').
+    \item \textbf{Pembagian Data:} Dataset dibagi menjadi data latih (90\%) dan data uji (10\%) untuk validasi model.
+\end{enumerate}
+
+\subsection{Implementasi}
+Model diimplementasikan menggunakan Python dengan pustaka NumPy. Fungsi \textit{Normal Equation} dibangun dari awal (\textit{from scratch}) untuk menghitung parameter $\theta$ menggunakan operasi perkalian matriks dan inversi, tanpa menggunakan fungsi \textit{black-box} dari pustaka \textit{machine learning} tingkat tinggi.
 
 % --- BAB IV ---
 \section{Hasil dan Pembahasan}
-Implementasi dilakukan menggunakan bahasa Python dengan pustaka NumPy. Grafik penurunan \textit{Loss} dapat dilihat pada Gambar \ref{fig:loss_graph}.
 
-% Placeholder Gambar
-\begin{figure}[htbp]
-    \centering
-    % \includegraphics[width=0.8\linewidth]{loss_plot.png} 
-    \caption{Ilustrasi Grafik Penurunan Cost Function (Contoh Placeholder)}
-    \label{fig:loss_graph}
-\end{figure}
+\subsection{Evaluasi Model}
+Model dilatih menggunakan data latih dan diuji pada data uji yang belum pernah dilihat sebelumnya. Hasil evaluasi kinerja model adalah sebagai berikut:
+
+\begin{itemize}
+    \item \textbf{Mean Squared Error (MSE):} $1.57 \times 10^{19}$
+    \item \textbf{Root Mean Squared Error (RMSE):} Rp 3.971.501.609
+    \item \textbf{R-squared ($R^2$):} 0.8365 (83.65\%)
+    \item \textbf{Mean Absolute Percentage Error (MAPE):} 27.08\%
+\end{itemize}
+
+\subsection{Analisis}
+Nilai $R^2$ sebesar 0.8365 menunjukkan bahwa model mampu menjelaskan sekitar 83.6\% variasi harga rumah di Jakarta Selatan berdasarkan fitur-fitur yang digunakan. Ini menunjukkan korelasi yang kuat antara luas tanah/bangunan dengan harga jual. Nilai RMSE sebesar 3.97 miliar rupiah, meskipun terlihat besar secara nominal, cukup wajar mengingat varians harga properti di kawasan elite Jakarta Selatan yang sangat tinggi (mencapai puluhan miliar rupiah). Penggunaan \textit{Normal Equation} terbukti efektif dan cepat untuk jumlah data ini.
 
 % --- BAB V ---
 \section{Kesimpulan}
-Berdasarkan hasil eksperimen, algoritma Regresi Linear dengan optimasi Gradient Descent terbukti mampu memprediksi harga rumah dengan tingkat error yang dapat diterima.
+Penelitian ini berhasil menerapkan metode \textit{Normal Equation} untuk prediksi harga rumah. Model menghasilkan tingkat akurasi yang baik dengan $R^2$ di atas 80\%. Pendekatan analitik ini memberikan solusi parameter optimal secara efisien tanpa memerlukan proses iterasi pelatihan.
 
 % --- Daftar Pustaka ---
 \bibliographystyle{IEEEtran}
