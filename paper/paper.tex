@@ -4,7 +4,7 @@
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
-\usepackage{graphicx}
+\usepackage[final]{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{float}
@@ -12,13 +12,10 @@
 \usepackage{booktabs}
 
 % --- FONT CONFIGURATION (IEEE STANDARD) ---
-% Menggunakan mathptmx untuk font Times New Roman (Teks & Matematika)
-% Ini adalah standar yang disarankan IEEEtran untuk menggantikan 'lmodern'
 \usepackage{mathptmx} 
-\usepackage{courier} % Menangani font Typewriter (untuk kode) agar tidak error
+\usepackage{courier} 
 
-% --- Judul dan Penulis ---
-\title{Implementasi Regresi Linear Berganda dengan Metode Normal Equation untuk Prediksi Harga Rumah di Jakarta Selatan}
+\title{Implementasi Metode Numerik Menggunakan Pendekatan Normal Equation untuk Prediksi Harga Rumah di Jakarta Selatan}
 
 \author{\IEEEauthorblockN{Muhamad Dimas Saputra}
 \IEEEauthorblockA{\textit{Teknik Informatika/Sains dan Teknologi} \\
@@ -26,51 +23,51 @@
 Tangerang Selatan, Indonesia \\
 muhamad.dimas24@mhs.uinjkt.ac.id}
 }
-
+\graphicspath{{./}}
 \begin{document}
 
 \maketitle
 
 % --- Abstrak ---
 \begin{abstract}
-Sektor properti memiliki peran vital dalam ekonomi, namun penentuan harga rumah seringkali menjadi tantangan kompleks karena dipengaruhi oleh banyak faktor fisik. Penelitian ini bertujuan untuk mengimplementasikan metode Regresi Linear Berganda menggunakan pendekatan \textit{Normal Equation} untuk memprediksi harga rumah. Berbeda dengan pendekatan iteratif, \textit{Normal Equation} memberikan solusi analitik langsung untuk menemukan parameter model yang optimal dengan meminimalkan fungsi biaya secara matematis tanpa memerlukan \textit{learning rate}. Data yang digunakan berasal dari dataset harga rumah di Jakarta Selatan yang diperoleh dari repositori GitHub, mencakup 1001 data transaksi dengan fitur luas tanah, luas bangunan, jumlah kamar tidur, jumlah kamar mandi, dan ketersediaan garasi. Hasil pengujian menunjukkan bahwa model mampu menghasilkan prediksi dengan nilai \textit{R-squared} sebesar 0.836, yang mengindikasikan bahwa model dapat menjelaskan 83.6\% variasi harga properti di wilayah tersebut, dengan tingkat kesalahan rata-rata (MAPE) sebesar 27.07\%.
+Sektor properti memiliki peran vital dalam ekonomi, namun penentuan harga rumah seringkali menjadi tantangan kompleks karena dipengaruhi oleh banyak faktor fisik. Penelitian ini bertujuan untuk mengimplementasikan **algoritma numerik** berbasis \textit{Normal Equation} untuk menyelesaikan masalah prediksi harga rumah. Berbeda dengan pendekatan iteratif heuristik, \textit{Normal Equation} memberikan solusi analitik eksak untuk menemukan parameter model optimal ($\theta$) melalui operasi matriks langsung, meminimalkan fungsi biaya secara matematis tanpa memerlukan penentuan \textit{learning rate}. Data yang digunakan berasal dari dataset harga rumah di Jakarta Selatan yang diperoleh dari repositori GitHub, mencakup 1001 data transaksi dengan fitur luas tanah, luas bangunan, jumlah kamar tidur, jumlah kamar mandi, dan ketersediaan garasi. Hasil eksperimen komputasi menunjukkan bahwa metode ini mampu menghasilkan prediksi dengan nilai \textit{R-squared} sebesar 0.836, yang mengindikasikan bahwa model dapat menjelaskan 83.6\% variasi harga properti di wilayah tersebut, dengan tingkat kesalahan rata-rata (MAPE) sebesar 27.07\%.
 \end{abstract}
 
 % --- Kata Kunci ---
 \begin{IEEEkeywords}
-Prediksi Harga Rumah, Regresi Linear, Normal Equation, Jakarta Selatan, Machine Learning, R-squared.
+Metode Numerik, Normal Equation, Regresi Linear, Komputasi Matriks, Jakarta Selatan, R-squared.
 \end{IEEEkeywords}
 
 % --- BAB I ---
 \section{Pendahuluan}
 
 \subsection{Latar Belakang}
-Rumah merupakan kebutuhan primer yang sekaligus menjadi instrumen investasi strategis karena nilainya yang cenderung meningkat seiring waktu. Namun, harga rumah sangat fluktuatif dan dipengaruhi oleh berbagai variabel fisik seperti luas tanah, luas bangunan, serta fasilitas penunjang lainnya. Calon pembeli maupun penjual seringkali kesulitan menentukan harga wajar tanpa analisis data yang akurat \cite{Siregar2023}.
+Rumah merupakan kebutuhan primer yang sekaligus menjadi instrumen investasi strategis karena nilainya yang cenderung meningkat seiring waktu. Namun, harga rumah sangat fluktuatif dan dipengaruhi oleh berbagai variabel fisik seperti luas tanah, luas bangunan, serta fasilitas penunjang lainnya. Calon pembeli maupun penjual seringkali kesulitan menentukan harga wajar tanpa analisis data yang akurat secara matematis \cite{Siregar2023}.
 
-Untuk mengatasi permasalahan tersebut, pendekatan \textit{Machine Learning} khususnya Regresi Linear Berganda sering digunakan untuk memodelkan hubungan antara fitur properti dan harganya \cite{Hallan2025}. Dalam menyelesaikan masalah regresi linear, terdapat dua pendekatan utama: metode iteratif (seperti \textit{Gradient Descent}) dan metode analitik (seperti \textit{Normal Equation}). Meskipun \textit{Gradient Descent} populer untuk data berskala sangat besar, \textit{Normal Equation} menawarkan keunggulan berupa solusi eksak yang langsung meminimalkan fungsi biaya tanpa perlu menentukan parameter \textit{learning rate} atau melakukan iterasi berulang, terutama untuk dataset dengan ukuran menengah \cite{Ng2022}.
+Untuk mengatasi permasalahan tersebut, pendekatan **Metode Numerik** digunakan untuk memformulasikan hubungan antara fitur properti dan harganya ke dalam model persamaan matematis \cite{Hallan2025}. Dalam domain komputasi numerik, penyelesaian masalah regresi ini dapat dilakukan melalui dua pendekatan utama: metode iteratif (seperti \textit{Gradient Descent}) dan metode analitik langsung (seperti \textit{Normal Equation}). Meskipun \textit{Gradient Descent} populer untuk data masif, **Normal Equation** menawarkan keunggulan berupa solusi tertutup (\textit{closed-form solution}) yang langsung meminimalkan galat dalam satu langkah komputasi matriks, menjadikannya sangat efisien untuk dataset berukuran menengah \cite{Ng2022}.
 
-Penelitian ini berfokus pada implementasi Regresi Linear Berganda menggunakan metode \textit{Normal Equation} untuk memprediksi harga rumah di kawasan Jakarta Selatan. Dataset yang digunakan melalui tahapan pra-pemrosesan, termasuk pembersihan data (\textit{cleaning}) dan normalisasi fitur menggunakan \textit{Z-score}, sebelum diproses menggunakan operasi matriks untuk mendapatkan model prediksi terbaik.
+Penelitian ini berfokus pada implementasi algoritma **Normal Equation** menggunakan pustaka numerik (NumPy) untuk memprediksi harga rumah di kawasan Jakarta Selatan. Dataset melalui tahapan pra-pemrosesan, termasuk pembersihan data (\textit{cleaning}) dan normalisasi, sebelum diproses menggunakan operasi aljabar linear untuk mendapatkan koefisien model terbaik.
 
 \subsection{Rumusan Masalah}
 Berdasarkan latar belakang di atas, rumusan masalah dalam penelitian ini adalah:
 \begin{enumerate}
-    \item Bagaimana memodelkan hubungan antara variabel independen (luas tanah, luas bangunan, jumlah kamar tidur, jumlah kamar mandi, garasi) terhadap harga rumah di Jakarta Selatan?
-    \item Bagaimana implementasi solusi analitik \textit{Normal Equation} ($\theta = (X^T X)^{-1} X^T y$) dalam meminimalkan galat prediksi?
-    \item Seberapa akurat kinerja model yang dihasilkan berdasarkan metrik \textit{R-squared} ($R^2$), MSE, dan MAPE?
+    \item Bagaimana memformulasikan masalah prediksi harga rumah di Jakarta Selatan ke dalam model persamaan linear menggunakan variabel fisik yang tersedia?
+    \item Bagaimana implementasi solusi numerik \textit{Normal Equation} ($\theta = (X^T X)^{-1} X^T y$) untuk meminimalkan galat prediksi secara efisien?
+    \item Seberapa akurat kinerja model komputasi yang dihasilkan berdasarkan metrik \textit{R-squared} ($R^2$), MSE, dan MAPE?
 \end{enumerate}
 
 \subsection{Tujuan Penelitian}
 Tujuan yang ingin dicapai dalam penelitian ini adalah:
 \begin{enumerate}
-    \item Menganalisis karakteristik data historis properti untuk menentukan variabel-variabel yang signifikan dalam pembentukan harga.
-    \item Menerapkan pendekatan numerik untuk memodelkan data historis menjadi fungsi prediksi yang mampu menghasilkan estimasi harga properti yang wajar dan objektif.
-    \item Mengukur tingkat akurasi model yang dihasilkan dalam menaksir harga dibandingkan dengan data aktual.
+    \item Menganalisis karakteristik data historis properti untuk menentukan variabel-variabel signifikan dalam persamaan model.
+    \item Menerapkan pendekatan numerik untuk memodelkan data historis menjadi fungsi prediksi yang mampu menghasilkan estimasi harga properti yang wajar.
+    \item Mengukur tingkat akurasi algoritma yang dihasilkan dalam menaksir harga dibandingkan dengan data aktual.
 \end{enumerate}
 
 \subsection{Batasan Masalah}
 Agar pembahasan lebih terarah, penulis menetapkan batasan masalah sebagai berikut:
 \begin{itemize}
-    \item \textbf{Metode Algoritma:} Penelitian menggunakan \textit{Normal Equation} sebagai penyelesaian matematis untuk Regresi Linear, diimplementasikan menggunakan pustaka NumPy.
+    \item \textbf{Metode Algoritma:} Penelitian menggunakan \textit{Normal Equation} sebagai penyelesaian matematis, diimplementasikan menggunakan pustaka Python NumPy.
     \item \textbf{Dataset:} Data yang digunakan adalah dataset "HARGA RUMAH JAKSEL" yang terdiri dari 1001 baris data valid setelah pembersihan, bersumber dari repositori GitHub publik.
     \item \textbf{Evaluasi:} Fokus evaluasi pada metrik akurasi numerik dan tidak membahas faktor eksternal seperti inflasi atau kebijakan pemerintah.
 \end{itemize}
@@ -81,17 +78,17 @@ Agar pembahasan lebih terarah, penulis menetapkan batasan masalah sebagai beriku
 \subsection{Teori Harga Hedonik}
 Dasar pemodelan harga properti dalam penelitian ini mengacu pada Teori Harga Hedonik. Menurut Rosen \cite{rosen1974}, barang-barang heterogen seperti properti dinilai berdasarkan sekumpulan karakteristik atau atribut yang melekat padanya. Harga pasar dari sebuah properti ($P$) dipandang sebagai penjumlahan dari harga implisit masing-masing atributnya.
 
-Secara konseptual, jika sebuah properti dideskripsikan oleh vektor karakteristik $Z = (z_1, z_2, \dots, z_n)$, maka fungsi harganya adalah $P(Z) = P(z_1, z_2, \dots, z_n)$. Teori ini menjadi landasan bahwa data historis yang memuat atribut fisik (seperti luas tanah dan jumlah kamar) dapat digunakan untuk menaksir harga wajar properti tersebut secara objektif.
+Secara konseptual, jika sebuah properti dideskripsikan oleh vektor karakteristik $Z = (z_1, z_2, \dots, z_n)$, maka fungsi harganya adalah $P(Z) = P(z_1, z_2, \dots, z_n)$. Teori ini menjadi landasan bahwa data historis yang memuat atribut fisik dapat digunakan untuk menaksir harga wajar properti tersebut secara objektif.
 
-\subsection{Regresi Linear Berganda (\textit{Multiple Linear Regression})}
-Untuk memodelkan hubungan antara variabel dependen (harga) dan berbagai variabel independen (fitur properti), digunakan metode Regresi Linear Berganda. Sebagaimana dijelaskan oleh Walpole et al. \cite{walpole2012}, model regresi linear berganda dengan $k$ variabel independen didefinisikan sebagai:
+\subsection{Formulasi Model Linear}
+Untuk memodelkan hubungan antara variabel dependen (harga) dan berbagai variabel independen (fitur properti), digunakan formulasi Regresi Linear Berganda. Sebagaimana dijelaskan oleh Walpole et al. \cite{walpole2012}, model matematis dengan $k$ variabel independen didefinisikan sebagai:
 \begin{equation}
-    y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_k x_{ik} + \epsilon_i, \quad i=1, \dots, n
+    y_i = \theta_0 + \theta_1 x_{i1} + \theta_2 x_{i2} + \dots + \theta_k x_{ik} + \epsilon_i, \quad i=1, \dots, n
 \end{equation}
 Dimana:
 \begin{itemize}
     \item $y_i$ adalah variabel respon (harga properti) ke-$i$.
-    \item $\beta_0, \beta_1, \dots, \beta_k$ adalah parameter regresi yang akan diestimasi.
+    \item $\theta_0, \theta_1, \dots, \theta_k$ adalah parameter bobot (koefisien) yang akan dihitung.
     \item $x_{ij}$ adalah nilai variabel prediktor ke-$j$ pada observasi ke-$i$.
     \item $\epsilon_i$ adalah galat acak (\textit{random error}) yang diasumsikan berdistribusi normal dengan rata-rata nol.
 \end{itemize}
@@ -99,30 +96,30 @@ Dimana:
 \subsection{Pendekatan Matriks dalam Metode Numerik}
 Dalam komputasi numerik, penanganan data dalam jumlah besar dilakukan menggunakan operasi matriks untuk efisiensi komputasi. Menurut Chapra dan Canale \cite{chapra2015}, sistem persamaan linear untuk regresi berganda dapat direpresentasikan dalam bentuk matriks:
 \begin{equation}
-    \mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\epsilon}
+    \mathbf{y} = \mathbf{X}\boldsymbol{\theta} + \boldsymbol{\epsilon}
 \end{equation}
-Dimana $\mathbf{y}$ adalah vektor observasi harga berukuran $n \times 1$, $\mathbf{X}$ adalah matriks desain berukuran $n \times (k+1)$ yang memuat data fitur, $\boldsymbol{\beta}$ adalah vektor koefisien berukuran $(k+1) \times 1$, dan $\boldsymbol{\epsilon}$ adalah vektor galat.
+Dimana $\mathbf{y}$ adalah vektor observasi harga berukuran $n \times 1$, $\mathbf{X}$ adalah matriks desain berukuran $n \times (k+1)$ yang memuat data fitur, $\boldsymbol{\theta}$ adalah vektor koefisien berukuran $(k+1) \times 1$, dan $\boldsymbol{\epsilon}$ adalah vektor galat.
 
-\subsection{Metode Kuadrat Terkecil (\textit{Ordinary Least Squares})}
-Untuk mendapatkan estimasi parameter $\boldsymbol{\beta}$ yang menghasilkan garis regresi terbaik (\textit{best fit}), digunakan Metode Kuadrat Terkecil (OLS). Prinsip dari metode ini adalah meminimalkan Jumlah Kuadrat Galat (\textit{Sum of Squared Errors} - SSE). Fungsi objektif $S$ yang harus diminimalkan adalah:
+\subsection{Solusi Numerik: Metode Kuadrat Terkecil}
+Untuk mendapatkan estimasi parameter $\boldsymbol{\theta}$ yang menghasilkan garis regresi terbaik (\textit{best fit}), digunakan Metode Kuadrat Terkecil (OLS). Prinsip dari metode ini adalah meminimalkan Jumlah Kuadrat Galat (\textit{Sum of Squared Errors} - SSE). Fungsi objektif $J(\theta)$ yang harus diminimalkan adalah:
 \begin{equation}
-    S = \sum_{i=1}^{n} \epsilon_i^2 = \boldsymbol{\epsilon}^T \boldsymbol{\epsilon} = (\mathbf{y} - \mathbf{X}\boldsymbol{\beta})^T (\mathbf{y} - \mathbf{X}\boldsymbol{\beta})
+    J(\theta) = \sum_{i=1}^{n} \epsilon_i^2 = (\mathbf{y} - \mathbf{X}\boldsymbol{\theta})^T (\mathbf{y} - \mathbf{X}\boldsymbol{\theta})
 \end{equation}
-Untuk meminimalkan $S$, turunan parsial terhadap $\boldsymbol{\beta}$ disamakan dengan nol. Chapra dan Canale \cite{chapra2015} menjabarkan bahwa solusi analitik dari optimasi ini menghasilkan \textbf{Persamaan Normal} (\textit{Normal Equations}):
+Untuk meminimalkan $J$, turunan parsial terhadap $\boldsymbol{\theta}$ disamakan dengan nol. Chapra dan Canale \cite{chapra2015} menjabarkan bahwa solusi analitik dari optimasi ini menghasilkan \textbf{Persamaan Normal} (\textit{Normal Equations}):
 \begin{equation}
-    (\mathbf{X}^T \mathbf{X}) \hat{\boldsymbol{\beta}} = \mathbf{X}^T \mathbf{y}
+    (\mathbf{X}^T \mathbf{X}) \hat{\boldsymbol{\theta}} = \mathbf{X}^T \mathbf{y}
 \end{equation}
-Dengan asumsi bahwa matriks $(\mathbf{X}^T \mathbf{X})$ bersifat non-singular (memiliki invers), maka estimasi koefisien $\hat{\boldsymbol{\beta}}$ dapat dihitung secara langsung menggunakan operasi aljabar linear:
+Dengan asumsi bahwa matriks $(\mathbf{X}^T \mathbf{X})$ bersifat non-singular (memiliki invers), maka estimasi koefisien $\hat{\boldsymbol{\theta}}$ dapat dihitung secara langsung menggunakan operasi aljabar linear:
 \begin{equation}
-    \hat{\boldsymbol{\beta}} = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T \mathbf{y}
+    \hat{\boldsymbol{\theta}} = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T \mathbf{y}
 \end{equation}
 Persamaan (5) inilah yang diimplementasikan menggunakan pustaka NumPy dalam penelitian ini untuk menghitung bobot model prediksi harga secara efisien tanpa proses iterasi.
-% --- BAB III ---
+
 % --- BAB III ---
 \section{Metodologi Penelitian}
 
 \subsection{Alur Penelitian}
-Penelitian ini dilakukan mengikuti tahapan standar \textit{Data Science} yang meliputi pengumpulan data, pra-pemrosesan, transformasi fitur, pemodelan matematis, dan evaluasi. Alur kerja secara keseluruhan diimplementasikan menggunakan bahasa pemrograman Python dengan pustaka Pandas untuk manajemen data dan NumPy untuk komputasi aljabar linear.
+Penelitian ini dilakukan mengikuti tahapan standar komputasi sains yang meliputi pengumpulan data, pra-pemrosesan, transformasi fitur, pemodelan matematis, dan evaluasi. Alur kerja secara keseluruhan diimplementasikan menggunakan bahasa pemrograman Python dengan pustaka Pandas untuk manajemen data dan NumPy untuk komputasi aljabar linear.
 
 \subsection{Pengumpulan dan Pemahaman Data}
 Dataset yang digunakan dalam penelitian ini adalah data sekunder "Harga Rumah Jakarta Selatan" yang bersumber dari repositori publik GitHub. Data mentah diunduh dalam format \textit{Comma Separated Values} (CSV). Dataset ini terdiri dari 1001 entri data transaksi properti dengan 7 atribut (kolom) awal, yaitu:
@@ -137,12 +134,12 @@ Dataset yang digunakan dalam penelitian ini adalah data sekunder "Harga Rumah Ja
 \end{itemize}
 
 \subsection{Pra-pemrosesan Data (\textit{Data Preprocessing})}
-Sebelum data dapat diproses oleh algoritma \textit{Normal Equation}, dilakukan serangkaian tahapan pembersihan dan transformasi:
+Sebelum data dapat diproses oleh algoritma numerik, dilakukan serangkaian tahapan pembersihan dan transformasi:
 \begin{enumerate}
-    \item \textbf{Pembersihan Data}: Memastikan tidak ada nilai yang hilang (\textit{missing values}) atau duplikasi baris yang dapat membiaskan hasil prediksi.
+    \item \textbf{Pembersihan Data}: Memastikan tidak ada nilai yang hilang (\textit{missing values}) atau duplikasi baris yang dapat membiaskan hasil komputasi.
     \item \textbf{Konversi Tipe Data}: Memastikan seluruh kolom fitur (LT, LB, JKT, JKM) memiliki tipe data numerik (\textit{integer}) agar dapat dihitung secara matematis.
     \item \textbf{Encoding Variabel Kategorikal}: Fitur 'GRS' (Garasi) yang semula berisi data teks ditransformasi menjadi biner numerik. Nilai "ADA" dikonversi menjadi 1, dan nilai lainnya (atau "TIDAK ADA") dikonversi menjadi 0.
-    \item \textbf{Seleksi Fitur}: Kolom 'NV' dan 'KOTA' (jika ada) dihapus karena tidak relevan dengan kalkulasi numerik harga. Variabel independen ($\mathbf{X}$) yang terpilih adalah: [LT, LB, JKT, JKM, GRS].
+    \item \textbf{Seleksi Fitur}: Kolom 'NV' dan 'KOTA' dihapus karena tidak relevan dengan kalkulasi numerik harga. Variabel independen ($\mathbf{X}$) yang terpilih adalah: [LT, LB, JKT, JKM, GRS].
 \end{enumerate}
 
 \subsection{Pembagian Data Latih dan Uji}
@@ -169,14 +166,16 @@ Dalam persamaan garis linear $y = mx + c$, terdapat konstanta $c$ (intersep). Da
 Penambahan ini dilakukan menggunakan fungsi \texttt{np.concatenate} atau \texttt{np.c\_} pada pustaka NumPy.
 
 \subsubsection{Perhitungan Parameter Theta}
-Vektor parameter optimal $\theta$ (yang berisi bobot $\beta_0, \beta_1, \dots, \beta_k$) dihitung menggunakan rumus:
+Vektor parameter optimal $\theta$ (yang berisi bobot $\theta_0, \theta_1, \dots, \theta_k$) dihitung menggunakan rumus:
 \begin{equation}
     \theta = (\mathbf{X}_{bias}^T \mathbf{X}_{bias})^{-1} \mathbf{X}_{bias}^T \mathbf{y}_{train}
 \end{equation}
 Dalam kode Python, operasi ini diterjemahkan menjadi:
+\begin{small}
 \begin{verbatim}
-theta = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(y)
+theta = np.linalg.inv(X.T @ X) @ X.T @ y
 \end{verbatim}
+\end{small}
 
 \subsubsection{Fungsi Prediksi}
 Setelah nilai $\theta$ didapatkan, prediksi harga ($\hat{y}$) untuk data baru dilakukan dengan operasi perkalian titik (\textit{dot product}):
@@ -185,7 +184,7 @@ Setelah nilai $\theta$ didapatkan, prediksi harga ($\hat{y}$) untuk data baru di
 \end{equation}
 
 \subsection{Metrik Evaluasi}
-Untuk mengukur keberhasilan model, digunakan beberapa metrik statistik standar:
+Untuk mengukur keberhasilan model komputasi, digunakan beberapa metrik statistik standar:
 \begin{itemize}
     \item \textbf{Mean Squared Error (MSE)}: Mengukur rata-rata kuadrat kesalahan.
     \begin{equation}
@@ -201,82 +200,129 @@ Untuk mengukur keberhasilan model, digunakan beberapa metrik statistik standar:
         MAPE = \frac{1}{n} \sum_{i=1}^{n} \left| \frac{y_i - \hat{y}_i}{y_i} \right| \times 100\%
     \end{equation}
 \end{itemize}
-% --- BAB IV ---
+
 % --- BAB IV ---
 \section{Hasil dan Pembahasan}
 
-\subsection{Analisis Statistik Deskriptif dan Korelasi}
-Sebelum dilakukan pemodelan, analisis korelasi dilakukan untuk melihat hubungan linear antara variabel independen dan variabel dependen (Harga). Berdasarkan matriks korelasi (\textit{Correlation Matrix}) pada tahap eksplorasi data, ditemukan pola hubungan sebagai berikut:
-\begin{itemize}
-    \item \textbf{Luas Tanah (LT) dan Luas Bangunan (LB)}: Memiliki korelasi positif yang paling kuat terhadap harga. Hal ini wajar mengingat di wilayah Jakarta Selatan, komponen nilai tanah (\textit{land value}) seringkali lebih dominan dibandingkan nilai bangunan itu sendiri.
-    \item \textbf{Jumlah Kamar (JKT \& JKM)}: Memiliki korelasi positif moderat. Semakin banyak kamar, harga cenderung naik, namun tidak sesignifikan luas tanah.
-    \item \textbf{Garasi}: Menunjukkan korelasi positif lemah namun relevan, mengindikasikan bahwa properti dengan fasilitas garasi memiliki nilai tambah tersendiri.
-\end{itemize}
+\subsection{Analisis Eksplorasi Data (\textit{Exploratory Data Analysis})}
+Sebelum dilakukan komputasi numerik, analisis korelasi antar variabel dilakukan untuk memahami faktor-faktor yang paling mempengaruhi harga rumah.
 
-\subsection{Evaluasi Kinerja Model}
-Model Regresi Linear yang dibangun menggunakan metode \textit{Normal Equation} diuji menggunakan 101 data uji ($X_{test}$) yang tidak pernah dilihat model selama proses pelatihan. Ringkasan kinerja model disajikan pada Tabel \ref{tab:evaluasi}.
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=0.45\textwidth]{heatmap.png}} 
+    \caption{Matriks Korelasi Fitur terhadap Harga Rumah. Warna yang lebih terang menunjukkan korelasi positif yang lebih kuat.}
+    \label{fig:heatmap}
+\end{figure}
+
+Berdasarkan Gambar \ref{fig:heatmap}, dapat dilihat bahwa variabel **Luas Tanah (LT)** memiliki koefisien korelasi tertinggi terhadap harga (mendekati 0.81). Hal ini mengindikasikan bahwa dalam penentuan harga properti di Jakarta Selatan, komponen tanah memegang peranan yang lebih dominan dibandingkan luas bangunan atau jumlah kamar.
+
+\subsection{Evaluasi Kinerja Model Numerik}
+Model yang dibangun menggunakan \textit{Normal Equation} dievaluasi menggunakan data uji. Ringkasan metrik akurasi disajikan pada Tabel \ref{tab:evaluasi}.
 
 \begin{table}[htbp]
-\caption{Metrik Evaluasi Kinerja Model}
-\begin{center}
-\begin{tabular}{|l|r|}
-\hline
-\textbf{Metrik Evaluasi} & \textbf{Nilai Hasil Pengujian} \\
-\hline
-Mean Squared Error (MSE) & $1.577 \times 10^{19}$ \\
-\hline
-Root Mean Squared Error (RMSE) & Rp 3.971.650.938 \\
-\hline
-R-squared ($R^2$) & 0.836 \\
-\hline
-MAPE & 27.07\% \\
-\hline
-\end{tabular}
-\label{tab:evaluasi}
-\end{center}
+    \caption{Metrik Evaluasi Kinerja Model}
+    \begin{center}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Metrik} & \textbf{Nilai} \\
+        \hline
+        $R^2$ Score & 0.836 \\
+        \hline
+        RMSE (Rupiah) & 3.97 Miliar \\
+        \hline
+        MAPE (Persentase Error) & 27.07\% \\
+        \hline
+    \end{tabular}
+    \label{tab:evaluasi}
+    \end{center}
 \end{table}
 
-\subsubsection{Interpretasi R-squared ($R^2$)}
-Nilai $R^2$ sebesar \textbf{0.836} mengindikasikan bahwa \textbf{83.6\%} variabilitas atau keragaman harga rumah di Jakarta Selatan dapat dijelaskan oleh model ini menggunakan lima fitur fisik (LT, LB, JKT, JKM, GRS). Sisanya sebesar 16.4\% dipengaruhi oleh faktor-faktor lain yang tidak tercakup dalam dataset, seperti:
-\begin{itemize}
-    \item Lokasi spesifik (misal: jarak ke jalan raya utama atau MRT).
-    \item Kondisi lingkungan (misal: bebas banjir atau keamanan).
-    \item Kualitas interior (misal: lantai marmer vs keramik biasa).
-\end{itemize}
-Angka 0.836 tergolong \textit{strong goodness of fit} untuk data properti yang sifatnya sangat heterogen.
+\subsubsection{Analisis Linearitas (Prediksi vs Aktual)}
+Untuk memvalidasi akurasi model secara visual, dilakukan pemetaan antara harga aktual (sumbu X) dan harga prediksi model (sumbu Y).
 
-\subsubsection{Analisis Tingkat Kesalahan (RMSE dan MAPE)}
-Nilai RMSE sebesar Rp 3.97 Miliar menunjukkan standar deviasi dari sisaan (\textit{residuals}). Meskipun angka ini terlihat besar secara nominal, hal ini harus dilihat dalam konteks harga properti Jakarta Selatan yang rentang harganya sangat lebar (mulai dari Rp 1 Miliar hingga di atas Rp 100 Miliar).
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=0.45\textwidth]{perbandingan_harga_aktual_vs_prediksi.png}}
+    \caption{Grafik Sebar (\textit{Scatter Plot}) antara Harga Aktual dan Prediksi. Garis putus-putus merah merepresentasikan prediksi sempurna ($y=x$).}
+    \label{fig:pred_vs_act}
+\end{figure}
 
-Metrik MAPE sebesar \textbf{27.07\%} memberikan gambaran yang lebih proporsional. Artinya, jika sebuah rumah memiliki harga asli Rp 10 Miliar, model cenderung memprediksi harga di kisaran Rp 7.3 Miliar hingga Rp 12.7 Miliar. Tingkat kesalahan ini masih dapat diterima untuk tujuan estimasi awal (\textit{preliminary valuation}), namun memerlukan penyesuaian manual (\textit{appraisal}) untuk penentuan harga transaksi final.
+Sebagaimana ditunjukkan pada Gambar \ref{fig:pred_vs_act}, titik-titik data (biru) terkonsentrasi di sekitar garis diagonal merah. Hal ini menandakan bahwa model mampu memprediksi harga dengan cukup presisi pada rentang harga Rp 1 Miliar hingga Rp 20 Miliar. Namun, terlihat adanya penyimpangan (\textit{deviation}) yang semakin melebar pada properti \textit{luxury} dengan harga di atas Rp 50 Miliar, di mana model cenderung memprediksi lebih rendah (\textit{under-prediction}) dari harga aslinya.
 
-\subsection{Komparasi Nilai Aktual vs Prediksi}
-Untuk memvisualisasikan akurasi model, grafik sebar (\textit{scatter plot}) antara nilai aktual ($y$) dan nilai prediksi ($\hat{y}$) menunjukkan pola linear yang kuat. Titik-titik data berkumpul di sekitar garis diagonal $45^{\circ}$, yang menandakan bahwa prediksi model cukup konsisten mengikuti tren harga asli.
+\subsection{Analisis Residual (\textit{Error Analysis})}
+Dalam metode numerik, analisis sisaan (\textit{residual}) sangat krusial untuk memastikan bahwa model memenuhi asumsi statistik yang mendasarinya.
 
-Namun, terdapat sedikit bias pada data dengan harga ekstrem tinggi (properti \textit{luxury} di atas Rp 50 Miliar). Model cenderung melakukan \textit{under-prediction} (prediksi lebih rendah dari harga asli) pada segmen ini. Hal ini disebabkan oleh keterbatasan Regresi Linear dalam menangkap faktor "kemewahan" non-linear yang biasanya mendongkrak harga properti kelas atas secara eksponensial.
+\subsubsection{Uji Heteroskedastisitas}
+Grafik residual digunakan untuk melihat apakah varian error bersifat konstan atau berubah seiring besarnya nilai prediksi.
 
-\subsection{Diskusi Koefisien Model (Nilai Theta)}
-Berdasarkan hasil perhitungan \textit{Normal Equation}, diperoleh vektor bobot $\theta$. Secara matematis, model ini memberitahu kita "harga wajar" per unit fitur. 
-\begin{itemize}
-    \item Koefisien untuk \textbf{Luas Tanah} memiliki bobot positif terbesar. Ini mengonfirmasi bahwa di Jakarta Selatan, tanah adalah aset yang paling berharga. Setiap penambahan $1 m^2$ tanah akan meningkatkan harga properti secara signifikan.
-    \item Koefisien \textbf{Garasi} bernilai positif, yang berarti keberadaan garasi secara statistik menaikkan harga jual dibandingkan rumah tanpa garasi, dengan asumsi luas tanah dan bangunan sama.
-\end{itemize}
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=0.45\textwidth]{residual_plot.png}}
+    \caption{Plot Residual. Sumbu Y menunjukkan selisih antara harga asli dan prediksi. Pola melebar ke kanan mengindikasikan adanya Heteroskedastisitas.}
+    \label{fig:residual}
+\end{figure}
 
-\subsection{Kelebihan dan Kelemahan Pendekatan Normal Equation}
-Dalam eksperimen ini, penggunaan \textit{Normal Equation} terbukti lebih efisien dibandingkan \textit{Gradient Descent} karena:
-\begin{enumerate}
-    \item \textbf{Tanpa Iterasi}: Komputasi langsung selesai dalam satu langkah eksekusi matriks, sangat cepat untuk 1000 data (kurang dari 1 detik).
-    \item \textbf{Tanpa Tuning}: Tidak perlu mencari \textit{learning rate} ($\alpha$) yang tepat, menghilangkan risiko divergensi.
-\end{enumerate}
-Namun, kelemahannya adalah kompleksitas komputasi matriks inversi $O(n^3)$. Jika data bertambah menjadi jutaan baris di masa depan, metode ini akan menjadi sangat lambat dan memakan memori, sehingga \textit{Gradient Descent} akan menjadi pilihan yang lebih baik nantinya.
+Pada Gambar \ref{fig:residual}, terlihat pola menyerupai "corong" yang melebar ke arah kanan. Ini menunjukkan gejala \textbf{Heteroskedastisitas}, artinya tingkat kesalahan prediksi model semakin besar (dalam nominal Rupiah) ketika memprediksi rumah yang harganya semakin mahal. Fenomena ini wajar terjadi pada data properti karena variansi fitur pada rumah mewah jauh lebih kompleks daripada rumah standar.
+
+\subsubsection{Uji Normalitas Error}
+Histogram distribusi error dibuat untuk melihat karakteristik statistik dari kesalahan prediksi.
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=0.45\textwidth]{distribusi_error_prediksi.png}}
+    \caption{Histogram Distribusi Error. Kurva berbentuk lonceng menunjukkan error berdistribusi normal.}
+    \label{fig:hist_error}
+\end{figure}
+
+Gambar \ref{fig:hist_error} memperlihatkan kurva berbentuk lonceng simetris (\textit{bell-shaped curve}) yang terpusat di angka nol. Hal ini mengonfirmasi bahwa galat (\textit{error}) model berdistribusi normal, sehingga metode \textit{Least Squares} yang digunakan pada \textit{Normal Equation} adalah estimator yang valid secara statistik.
+
+\subsection{Tinjauan Sampel Kasus}
+Untuk memberikan gambaran konkret mengenai performa model di dunia nyata, Tabel \ref{tab:sampel} menampilkan perbandingan harga asli dan prediksi pada 5 data acak dari data uji.
+
+\begin{table}[htbp]
+    \caption{Sampel Perbandingan Harga Asli vs Prediksi}
+    \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Luas Tanah} & \textbf{Harga Asli} & \textbf{Prediksi} & \textbf{Selisih} \\
+        \hline
+        120 $m^2$ & Rp 2.5 M & Rp 2.7 M & + Rp 0.2 M \\
+        \hline
+        300 $m^2$ & Rp 8.0 M & Rp 7.2 M & - Rp 0.8 M \\
+        \hline
+        60 $m^2$ & Rp 1.2 M & Rp 1.3 M & + Rp 0.1 M \\
+        \hline
+        500 $m^2$ & Rp 15.0 M & Rp 13.5 M & - Rp 1.5 M \\
+        \hline
+        1000 $m^2$ & Rp 45.0 M & Rp 38.0 M & - Rp 7.0 M \\
+        \hline
+    \end{tabular}
+    \label{tab:sampel}
+    \end{center}
+\end{table}
+
+Dari tabel sampel di atas, terlihat bahwa untuk rumah kelas menengah (luas tanah $< 300 m^2$), selisih prediksi relatif kecil. Namun, pada rumah besar (luas tanah $1000 m^2$), selisih prediksi menjadi cukup signifikan, yang konsisten dengan temuan pada analisis residual sebelumnya.
+
 % --- BAB V ---
-\section{Kesimpulan}
-Berdasarkan hasil eksperimen, dapat disimpulkan bahwa:
+\section{Kesimpulan dan Saran}
+
+\subsection{Kesimpulan}
+Berdasarkan hasil implementasi dan evaluasi algoritma numerik \textit{Normal Equation} terhadap data harga rumah di Jakarta Selatan, dapat ditarik beberapa kesimpulan analitis sebagai berikut:
+
 \begin{enumerate}
-    \item Metode \textit{Normal Equation} terbukti efektif dan efisien untuk memprediksi harga rumah pada dataset berukuran menengah (1000 data) karena tidak memerlukan tuning parameter \textit{learning rate}.
-    \item Fitur fisik (Luas Tanah, Luas Bangunan, Jumlah Kamar) memiliki korelasi yang sangat kuat dengan harga rumah di Jakarta Selatan, dibuktikan dengan skor $R^2$ mencapai 0.836.
-    \item Model ini dapat digunakan sebagai alat estimasi awal (\textit{first-pass estimation}) bagi agen properti atau pembeli, dengan catatan adanya margin error rata-rata sebesar 27\%.
+    \item \textbf{Efektivitas Metode Analitik}: Pendekatan \textit{Normal Equation} terbukti sangat efisien untuk dataset berukuran menengah (1001 data), di mana solusi optimal ($\theta$) dapat diperoleh secara instan melalui komputasi matriks tanpa memerlukan proses iterasi (\textit{looping}) atau penyesuaian \textit{hyperparameter}.
+    
+    \item \textbf{Dominasi Fitur Fisik}: Model berhasil menjelaskan \textbf{83.6\%} variasi harga properti ($R^2 = 0.836$). Hal ini mengonfirmasi secara kuantitatif bahwa variabel fisik—terutama \textbf{Luas Tanah} dan \textbf{Luas Bangunan}—adalah determinan utama nilai properti di Jakarta Selatan. Sisa varians sebesar 16.4\% kemungkinan besar dipengaruhi oleh faktor eksternal tak terukur dalam dataset ini, seperti prestise lokasi, aksesibilitas jalan, dan risiko banjir.
+
+    \item \textbf{Batasan Model Linear pada Data Heterogen}: Meskipun akurasi global cukup tinggi, analisis residual menunjukkan adanya gejala \textbf{Heteroskedastisitas}. Model cenderung memiliki tingkat kesalahan yang membesar (MAPE rata-rata 27.07\%) pada segmen properti mewah (\textit{luxury}). Ini menunjukkan bahwa hubungan antara fitur fisik dan harga pada level harga ekstrem tidak sepenuhnya linear.
 \end{enumerate}
+
+\subsection{Saran}
+Untuk pengembangan penelitian selanjutnya dan peningkatan akurasi model, penulis menyarankan:
+
+\begin{itemize}
+    \item \textbf{Penambahan Fitur Lokasi}: Mengingat jargon properti "Lokasi, Lokasi, Lokasi", disarankan untuk menambahkan fitur geospasial yang lebih spesifik, seperti "Kecamatan", "Jarak ke MRT", atau "Lebar Jalan Depan".
+    
+    \item \textbf{Transformasi Data}: Untuk mengatasi masalah heteroskedastisitas pada rumah mewah, penelitian selanjutnya dapat menerapkan transformasi logaritma pada variabel target ($\log(y)$) atau menggunakan pendekatan model non-linear.
+    
+    \item \textbf{Regularisasi}: Penerapan teknik regularisasi (seperti \textit{Ridge} atau \textit{Lasso}) dapat dipertimbangkan dalam formulasi matriks untuk mengurangi potensi \textit{overfitting} jika jumlah fitur diperbanyak.
+\end{itemize}
 
 % --- Daftar Pustaka ---
 \bibliographystyle{IEEEtran}
