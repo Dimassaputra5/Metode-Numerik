@@ -18,7 +18,7 @@
 % --- Konfigurasi Path Gambar ---
 \graphicspath{{./}{./paper/}}
 
-\title{Implementasi Metode Numerik Menggunakan Pendekatan Normal Equation untuk Prediksi Harga Rumah di Jakarta Selatan}
+\title{Analisis Kinerja Metode Numerik Normal Equation pada Prediksi Harga Properti: Studi Kasus Jakarta Selatan}
 
 \author{\IEEEauthorblockN{Muhamad Dimas Saputra}
 \IEEEauthorblockA{\textit{Teknik Informatika/Sains dan Teknologi} \\
@@ -33,7 +33,7 @@ muhamad.dimas24@mhs.uinjkt.ac.id}
 
 % --- Abstrak ---
 \begin{abstract}
-Sektor properti memiliki peran vital dalam perekonomian nasional, namun penentuan harga rumah seringkali menjadi tantangan karena dipengaruhi oleh berbagai faktor fisik yang saling berinteraksi. Penelitian ini mengimplementasikan algoritma numerik berbasis Normal Equation untuk menyelesaikan masalah aproksimasi harga rumah. Berbeda dengan pendekatan iteratif konvensional, Normal Equation merupakan metode langsung yang menghasilkan solusi aproksimasi parameter model melalui operasi matriks dalam satu langkah komputasi, tanpa memerlukan penentuan tingkat pembelajaran atau proses iterasi berulang. Data yang digunakan berasal dari dataset publik Daftar Harga Rumah di Kaggle, yang mencakup 1001 transaksi properti di Jakarta Selatan. Fitur yang dianalisis meliputi luas tanah, luas bangunan, jumlah kamar tidur, jumlah kamar mandi, dan ketersediaan garasi. Hasil eksperimen menunjukkan bahwa metode ini menghasilkan prediksi dengan nilai R-squared sebesar 0.836, mengindikasikan bahwa model dapat menjelaskan 83.6 persen variasi harga properti di wilayah tersebut, dengan tingkat kesalahan rata-rata (MAPE) sebesar 27.07 persen.
+Penentuan harga pasar yang wajar pada sektor properti seringkali terkendala oleh subjektivitas dan kompleksitas variabel fisik bangunan. Penelitian ini bertujuan untuk mengevaluasi efektivitas metode numerik \textit{Normal Equation} dalam memodelkan fungsi prediksi harga rumah secara matematis. Berbeda dengan pendekatan iteratif yang bergantung pada \textit{hyperparameter}, \textit{Normal Equation} menawarkan solusi analitik langsung melalui operasi matriks untuk meminimalkan galat kuadrat terkecil. Studi ini memanfaatkan dataset 1001 transaksi properti di Jakarta Selatan dengan variabel prediktor meliputi luas tanah, luas bangunan, dan jumlah ruangan. Hasil eksperimen menunjukkan bahwa model linear ini mampu menjelaskan 83.6\% variasi harga ($R^2 = 0.836$) dengan rata-rata kesalahan absolut (MAPE) sebesar 27.07\%. Meskipun model terbukti efisien secara komputasi dan akurat pada segmen harga menengah, analisis residual mengungkapkan kelemahan signifikan berupa heteroskedastisitas pada properti mewah dan anomali prediksi nilai negatif pada properti kecil. Temuan ini mengindikasikan bahwa meskipun metode numerik linear efektif untuk estimasi cepat, pendekatan ini memiliki batasan fundamental dalam menangani dinamika harga ekstrem di pasar properti.
 \end{abstract}
 
 % --- Kata Kunci ---
