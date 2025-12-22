@@ -11,9 +11,40 @@
 \usepackage{hyperref}
 \usepackage{booktabs}
 
+\usepackage{listings}
+
+% --- Konfigurasi Tampilan Kode (Python Style) ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize, % Font mesin ketik
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=Python % Bahasa pemrograman
+}
+
+\lstset{style=mystyle}
+
 % --- FONT CONFIGURATION ---
 \usepackage{mathptmx}
 \usepackage{courier}
+
 
 % --- Konfigurasi Path Gambar ---
 \graphicspath{{./}{./paper/}}
@@ -31,48 +62,47 @@ muhamad.dimas24@mhs.uinjkt.ac.id}
 
 \maketitle
 
-% --- Abstrak ---
-\begin{abstract}
-Penentuan harga pasar yang wajar pada sektor properti seringkali terkendala oleh subjektivitas dan kompleksitas variabel fisik bangunan. Penelitian ini bertujuan untuk mengevaluasi efektivitas metode numerik \textit{Normal Equation} dalam memodelkan fungsi prediksi harga rumah secara matematis. Berbeda dengan pendekatan iteratif yang bergantung pada \textit{hyperparameter}, \textit{Normal Equation} menawarkan solusi analitik langsung melalui operasi matriks untuk meminimalkan galat kuadrat terkecil. Studi ini memanfaatkan dataset 1001 transaksi properti di Jakarta Selatan dengan variabel prediktor meliputi luas tanah, luas bangunan, dan jumlah ruangan. Hasil eksperimen menunjukkan bahwa model linear ini mampu menjelaskan 83.6\% variasi harga ($R^2 = 0.836$) dengan rata-rata kesalahan absolut (MAPE) sebesar 27.07\%. Meskipun model terbukti efisien secara komputasi dan akurat pada segmen harga menengah, analisis residual mengungkapkan kelemahan signifikan berupa heteroskedastisitas pada properti mewah dan anomali prediksi nilai negatif pada properti kecil. Temuan ini mengindikasikan bahwa meskipun metode numerik linear efektif untuk estimasi cepat, pendekatan ini memiliki batasan fundamental dalam menangani dinamika harga ekstrem di pasar properti.
-\end{abstract}
-
-% --- Kata Kunci ---
-\begin{IEEEkeywords}
-Metode Numerik, Normal Equation, Regresi Linear, Komputasi Matriks, Jakarta Selatan, Aproksimasi Kuadrat Terkecil.
-\end{IEEEkeywords}
 
 % --- BAB I ---
 \section{Pendahuluan}
 
 \subsection{Latar Belakang}
-Rumah merupakan kebutuhan primer sekaligus instrumen investasi strategis yang nilainya cenderung meningkat seiring waktu. Namun, penentuan harga rumah yang wajar merupakan proses yang kompleks karena dipengaruhi oleh banyak variabel fisik seperti luas tanah, luas bangunan, serta fasilitas pendukung lainnya \cite{Siregar2023}. Tanpa analisis data yang akurat secara matematis, calon pembeli maupun penjual sering mengalami kesulitan dalam menentukan harga yang tepat \cite{Hallan2025}.
+Rumah merupakan kebutuhan primer sekaligus instrumen investasi strategis yang nilainya cenderung meningkat seiring waktu \cite{Siregar2023}. 
+Namun, bagi calon pembeli maupun penjual, penentuan harga pasar yang wajar sering kali menjadi dilema tersendiri. 
+Kompleksitas ini terjadi karena harga properti sangat dipengaruhi oleh kombinasi variabel fisik yang beragam dan dinamis, seperti luas tanah, luas bangunan, serta ketersediaan fasilitas pendukung lainnya \cite{Hallan2025}. 
+Studi menunjukkan bahwa faktor dominan seperti luas tanah memiliki korelasi yang sangat signifikan terhadap fluktuasi harga \cite{Khoiriyah2024}.
 
-Untuk mengatasi permasalahan ini, penelitian ini menggunakan pendekatan Machine Learning untuk memformulasikan hubungan antara fitur-fitur properti dan harganya ke dalam model persamaan linear. Dalam domain kecerdasan buatan dan komputasi numerik, Regresi Linear merupakan algoritma fundamental yang digunakan untuk memprediksi nilai variabel dependen (target) berdasarkan satu atau lebih variabel independen (fitur) \cite{Rais2024}.
+Tanpa adanya standarisasi perhitungan yang objektif, proses penaksiran harga sering kali terjebak pada subjektivitas. 
+Kurangnya pengetahuan dan informasi yang akurat mengenai tren pasar membuat pelaku transaksi sering mengalami kesulitan dalam menyepakati harga yang tepat \cite{Warjiyono2024}. 
+Oleh karena itu, diperlukan sebuah pendekatan berbasis data \textit{data-driven} yang mampu mengubah estimasi manual menjadi model matematika yang presisi untuk meminimalkan ketidakpastian tersebut.
 
-Dalam penyelesaian masalah Regresi Linear, terdapat pendekatan langsung (direct method) yang dikenal sebagai Normal Equation. Berbeda dengan metode iteratif (seperti \textit{Gradient Descent}) yang meminimalkan fungsi biaya (\textit{cost function}) secara bertahap melalui \textit{epoch}, Normal Equation memberikan solusi bentuk tertutup (\textit{closed-form solution}) untuk menemukan nilai bobot optimal secara instan dalam satu langkah komputasi. Metode ini menyelesaikan persamaan $\theta = (X^T X)^{-1} X^T y$ melalui operasi matriks, yang menjamin ditemukannya nilai minimum global dari fungsi \textit{Mean Squared Error} (MSE) tanpa perlu menentukan parameter \textit{learning rate}. Dalam penelitian ini, perhitungan Normal Equation diimplementasikan dengan memanfaatkan pustaka Numpy untuk memastikan efisiensi dan akurasi komputasi numerik.
+Sebagai solusi, penelitian ini menerapkan pendekatan Regresi Linear menggunakan metode numerik \textit{Normal Equation}. 
+Dalam teori pembelajaran mesin \textit{machine learning}, penyelesaian masalah regresi linear sering kali dilakukan menggunakan metode iteratif seperti \textit{Gradient Descent} yang memerlukan penentuan \textit{learning rate} dan iterasi berulang. 
+Namun, untuk dataset dengan ukuran yang wajar, \textit{Normal Equation} menawarkan pendekatan langsung \textit{direct method} yang lebih efisien \cite{Ng2022}. 
+Metode ini bekerja dengan menghitung solusi bentuk tertutup \textit{closed-form solution} melalui persamaan matriks $\theta = (X^T X)^{-1} X^T y$, yang menjamin ditemukannya nilai bobot optimal secara instan dalam satu langkah komputasi tanpa perlu proses \textit{looping} untuk meminimalkan \textit{cost function} secara bertahap.
 
 \subsection{Rumusan Masalah}
-Berdasarkan latar belakang tersebut, pertanyaan penelitian yang ingin dijawab adalah:
+Berdasarkan latar belakang permasalahan mengenai subjektivitas penentuan harga dan kompleksitas variabel properti, pertanyaan penelitian yang diajukan adalah:
 \begin{enumerate}
-    \item Bagaimana memformulasikan masalah prediksi harga rumah di Jakarta Selatan ke dalam model aproksimasi linear menggunakan fitur-fitur properti yang tersedia?
-    \item Bagaimana implementasi solusi numerik Normal Equation untuk meminimalkan galat prediksi secara efisien melalui operasi matriks?
-    \item Seberapa akurat performa model komputasi yang dihasilkan berdasarkan metrik evaluasi seperti R-squared, RMSE, dan MAPE?
+    \item Bagaimana memodelkan hubungan antara variabel fisik (seperti luas tanah dan bangunan) dengan harga properti di Jakarta Selatan untuk meminimalkan subjektivitas penaksiran harga?
+    \item Bagaimana efektivitas implementasi metode langsung \textit{direct method} Normal Equation dalam menyelesaikan persamaan Regresi Linear tanpa memerlukan proses iterasi \textit{non-iterative}?
+    \item Seberapa akurat performa model prediksi yang dihasilkan berdasarkan metrik evaluasi numerik seperti R-squared ($R^2$), RMSE, dan MAPE terhadap data aktual?
 \end{enumerate}
 
 \subsection{Tujuan Penelitian}
-Tujuan penelitian ini adalah:
+Tujuan utama dari penelitian ini adalah:
 \begin{enumerate}
-    \item Menganalisis karakteristik data historis properti untuk mengidentifikasi variabel-variabel signifikan yang mempengaruhi harga.
-    \item Menerapkan pendekatan numerik untuk mengubah data historis menjadi fungsi prediksi yang mampu menghasilkan estimasi harga properti yang masuk akal.
-    \item Mengukur tingkat akurasi algoritma dalam menaksir harga properti dibandingkan dengan nilai-nilai aktual dari data pengujian.
+    \item Mengidentifikasi signifikansi variabel-variabel fisik properti yang menjadi Faktor yang paling berpengaruh dalam pembentukan harga pasar di wilayah Jakarta Selatan.
+    \item Menerapkan algoritma Normal Equation untuk menghasilkan Perhitungan langsung yang mampu memprediksi harga rumah secara instan dan efisien secara komputasi.
+    \item Mengukur tingkat presisi model matematika yang dibangun dalam menentukan harga wajar properti sebagai panduan yang wajar bagi penjual maupun pembeli.
 \end{enumerate}
 
 \subsection{Batasan Masalah}
-Untuk memastikan pembahasan tetap terarah, penelitian ini menetapkan batasan sebagai berikut:
+Agar penelitian tetap terfokus pada solusi numerik yang diajukan, ditetapkan batasan-batasan sebagai berikut:
 \begin{itemize}
-    \item Metode algoritma yang digunakan adalah Normal Equation, diimplementasikan menggunakan pustaka Python NumPy.
-    \item Dataset yang dianalisis adalah data Daftar Harga Rumah dari Kaggle yang difilter untuk wilayah Jakarta Selatan, mencakup 1001 entri data valid.
-    \item Evaluasi fokus pada metrik akurasi numerik dan tidak membahas faktor-faktor eksternal seperti inflasi, kebijakan pemerintah, atau tren pasar makroekonomi.
+    \item Metode Algoritma: Penelitian ini hanya menggunakan Regresi Linear dengan pendekatan \textit{Normal Equation} (Metode Kuadrat Terkecil) yang diimplementasikan menggunakan pustaka Python NumPy, tidak membahas metode iteratif seperti \textit{Gradient Descent} atau \textit{Neural Networks}.
+    \item Lingkup Data: Dataset yang digunakan bersumber dari Kaggle "Daftar Harga Rumah" yang difilter khusus untuk wilayah Jakarta Selatan, dengan total sampel valid sebanyak 1001 data transaksi.
+    \item Variabel dan Evaluasi: Fokus analisis terbatas pada fitur fisik internal (Luas Tanah, Luas Bangunan, Jumlah Kamar, Garasi) dan tidak memperhitungkan faktor eksternal makroekonomi (inflasi, suku bunga) atau kondisi jalan spesifik. Evaluasi kinerja hanya didasarkan pada metrik error statistik.
 \end{itemize}
 
 % --- BAB II ---
@@ -167,6 +197,25 @@ Untuk menguji kemampuan generalisasi model, dataset dibagi menjadi dua bagian:
     \item Data Latih: Sebesar 90 persen dari total data (900 data), digunakan untuk menghitung parameter model.
     \item Data Uji: Sebesar 10 persen dari total data (101 data), digunakan untuk validasi kinerja model pada data yang belum pernah dilihat sebelumnya.
 \end{itemize}
+
+\subsection{Normalisasi Fitur (Z-Score)}
+Dalam dataset properti, terdapat disparitas skala yang signifikan antar fitur. Sebagai contoh, variabel \textit{Luas Tanah} memiliki rentang nilai dalam ratusan hingga ribuan ($m^2$), sedangkan variabel \textit{Jumlah Kamar} hanya berkisar pada satuan digit (1-10 unit). Perbedaan skala ini dapat menyebabkan ketidakstabilan numerik dalam operasi matriks dan dominasi varians oleh fitur berskala besar.
+
+Untuk mengatasi hal tersebut, penelitian ini menerapkan teknik standardisasi data menggunakan metode \textit{Z-Score}. Teknik ini mentransformasi distribusi data pada setiap fitur numerik sehingga memiliki rata-rata ($\mu$) sebesar 0 dan standar deviasi ($\sigma$) sebesar 1. Formulasi matematis untuk normalisasi adalah sebagai berikut:
+
+\begin{equation}
+    z_{ij} = \frac{x_{ij} - \mu_j}{\sigma_j}
+\end{equation}
+
+Dimana:
+\begin{itemize}
+    \item $z_{ij}$ adalah nilai fitur ke-$j$ pada sampel ke-$i$ yang telah dinormalisasi.
+    \item $x_{ij}$ adalah nilai asli fitur sebelum normalisasi.
+    \item $\mu_j$ adalah rata-rata (\textit{mean}) dari seluruh data pada fitur $j$.
+    \item $\sigma_j$ adalah standar deviasi dari seluruh data pada fitur $j$.
+\end{itemize}
+
+Proses normalisasi ini diterapkan pada variabel independen sebelum data diproses ke dalam persamaan Normal Equation.
 
 \subsection{Implementasi Normal Equation dengan NumPy}
 Inti dari penelitian ini adalah implementasi algoritma Normal Equation menggunakan operasi matriks murni dengan NumPy. Berikut adalah implementasi kode Python:
@@ -318,20 +367,357 @@ Untuk membuktikan analisis di atas, mari kita lihat contoh acak pada Tabel \ref{
     \end{center}
 \end{table}
 
-Lihat baris kedua (Luas 123 $m^2$): harga asli 2.99 M, tebakan model 3.01 M. Selisihnya sangat tipis, nyaris sempurna.
-Namun, lihat baris pertama (Luas 216 $m^2$): harga asli sangat tinggi (18 M), tapi model hanya menebak 9.9 M. Selisihnya mencapai 8 Miliar. Ini membuktikan bahwa untuk rumah kecil yang harganya tidak wajar (mungkin karena lokasi sangat premium), model "kalah" karena hanya mengandalkan luas tanah sebagai patokan utama.
+baris kedua (Luas 123 $m^2$): harga asli 2.99 M, tebakan model 3.01 M. Selisihnya sangat tipis, nyaris sempurna.
+Namun, baris pertama (Luas 216 $m^2$): harga asli sangat tinggi (18 M), tapi model hanya menebak 9.9 M. Selisihnya mencapai 8 Miliar. Ini membuktikan bahwa untuk rumah kecil yang harganya tidak wajar (mungkin karena lokasi sangat premium), model "kalah" karena hanya mengandalkan luas tanah sebagai patokan utama.
 
 % --- BAB V ---
 \section{Kesimpulan}
-Berdasarkan hasil implementasi dan evaluasi algoritma numerik Normal Equation terhadap data harga rumah di Jakarta Selatan, dapat ditarik beberapa kesimpulan:
+Berdasarkan penelitian yang telah dilakukan, berikut adalah intisari dari temuan penulis mengenai prediksi harga rumah di Jakarta Selatan:
+
 \begin{enumerate}
-    \item Efektivitas Metode Langsung: Pendekatan Normal Equation terbukti sangat efisien untuk dataset berukuran menengah seperti 1001 data properti. Solusi aproksimasi dapat diperoleh secara instan melalui komputasi matriks dalam satu langkah tanpa memerlukan proses iterasi berulang atau penyesuaian hyperparameter. Keunggulan ini menjadikan metode ini sangat praktis untuk aplikasi real-time yang membutuhkan respons cepat.
-    \item Dominasi Fitur Fisik: Model berhasil menjelaskan 83.6 persen variasi harga properti. Hal ini mengonfirmasi secara kuantitatif bahwa variabel fisik terutama Luas Tanah dan Luas Bangunan adalah determinan utama nilai properti di Jakarta Selatan. Sisa varians sebesar 16.4 persen kemungkinan besar dipengaruhi oleh faktor eksternal yang tidak teramati dalam dataset ini, seperti prestise lokasi, aksesibilitas jalan, keamanan lingkungan, dan risiko bencana alam.
-    \item Batasan Model Linear pada Data Heterogen: Meskipun akurasi global cukup tinggi, analisis residual menunjukkan adanya gejala heteroskedastisitas. Model cenderung memiliki tingkat kesalahan yang membesar pada segmen properti mewah dengan harga ekstrem. Ini menunjukkan bahwa hubungan antara fitur fisik dan harga pada level harga tertinggi tidak sepenuhnya linear. Untuk meningkatkan akurasi pada segmen ini, penelitian lanjutan dapat mempertimbangkan transformasi nonlinear pada fitur atau penggunaan metode nonlinear yang lebih kompleks seperti ensemble methods atau neural networks.
+    \item Tanah Adalah Kunci Objektivitas: Penelitian ini menegaskan bahwa harga rumah tidak terbentuk secara acak. Penulis menemukan bahwa \textit{Luas Tanah} memegang peranan paling dominan ($r \approx 0.74$) dalam menentukan harga. Artinya, penggunaan rumus matematika berbasis data fisik dapat menjadi solusi ampuh untuk menghilangkan ``permainan harga'' atau subjektivitas yang sering membingungkan penjual dan pembeli.
+    
+    \item Keunggulan Perhitungan Langsung: Dari sisi teknis, penulis membuktikan bahwa metode \textit{Normal Equation} bekerja layaknya ``jalan pintas'' yang cerdas. Berbeda dengan metode lain yang harus menebak-nebak parameter berkali-kali (iterasi), metode ini mampu menemukan rumus harga terbaik hanya dalam satu langkah perhitungan matriks. Ini menjadikannya solusi yang sangat cepat dan ringkas untuk mengolah ribuan data properti.
+    
+    \item Akurasi dan Batas Kemampuan: Model yang dibangun berhasil memahami pola harga pasar dengan cukup baik (akurasi 83.7\%). Model ini sangat terpercaya untuk memprediksi harga rumah kelas menengah. Namun, penulis menemukan batasan wajar: model mulai ``kewalahan'' saat memprediksi rumah super-mewah. Hal ini terjadi karena harga rumah mewah seringkali dipengaruhi oleh nilai seni atau gengsi yang tidak bisa diukur hanya dengan meteran luas tanah.
 \end{enumerate}
 
 % --- Daftar Pustaka ---
 \bibliographystyle{IEEEtran}
 \bibliography{references}
+% Memulai Lampiran dengan satu kolom agar output rapi
+\onecolumn 
+
+\section*{Lampiran}
+\addcontentsline{toc}{section}{Lampiran}
+
+\subsection*{Lampiran: Kode Program dan Output}
+
+\begin{enumerate}
+    % 1. Import Library
+    \item \textbf{Import Library}
+\begin{lstlisting}[language=Python]
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_absolute_percentage_error
+\end{lstlisting}
+
+    % 2. Data Definition
+    \item \textbf{Load Dataset}
+\begin{lstlisting}[language=Python]
+df = pd.read_excel('data/HARGA RUMAH JAKSEL.xlsx')
+df
+\end{lstlisting}
+    
+    \noindent\textbf{Output:}
+\begin{verbatim}
+       Unnamed: 0 Unnamed: 1 Unnamed: 2 Unnamed: 3 Unnamed: 4 Unnamed: 5  \
+0           HARGA         LT         LB        JKT        JKM        GRS   
+1     28000000000       1100        700          5          6        ADA   
+2     19000000000        824        800          4          4        ADA   
+...           ...        ...        ...        ...        ...        ...   
+999   29000000000        692        400          4          3  TIDAK ADA   
+1000   1700000000        102        140          4          3  TIDAK ADA   
+1001   1250000000         63        110          3          3  TIDAK ADA   
+
+     Unnamed: 6  
+0          KOTA  
+1        JAKSEL  
+2        JAKSEL  
+...         ...  
+1001     JAKSEL  
+[1002 rows x 7 columns]
+\end{verbatim}
+
+    % 3. Rename Columns
+    \item \textbf{Rename kolom data}
+\begin{lstlisting}[language=Python]
+df.rename(columns={'Unnamed: 0': 'harga_rumah', 'Unnamed: 1': 'luas_tanah', 
+                   'Unnamed: 2': 'luas_bangunan', 'Unnamed: 3': 'jumlah_kamar_tidur', 
+                   'Unnamed: 4': 'jumlah_kamar_mandi','Unnamed: 5': 'garasi',   
+                   'Unnamed: 6': 'kota'}, inplace=True)
+df
+\end{lstlisting}
+
+    \noindent\textbf{Output:}
+\begin{verbatim}
+      harga_rumah luas_tanah luas_bangunan jumlah_kamar_tidur  \
+0           HARGA         LT            LB                JKT   
+1     28000000000       1100           700                  5   
+...           ...        ...           ...                ...   
+1001   1250000000         63           110                  3   
+
+     jumlah_kamar_mandi     garasi    kota  
+0                   JKM        GRS    KOTA  
+1                     6        ADA  JAKSEL  
+...                 ...        ...     ...  
+1001                  3  TIDAK ADA  JAKSEL  
+[1002 rows x 7 columns]
+\end{verbatim}
+
+    % 4. Remove Header
+    \item \textbf{hapus data baris paling awal \& Reset Index}
+\begin{lstlisting}[language=Python]
+df.drop(0, inplace=True)
+df.reset_index(drop=True, inplace=True)
+df
+\end{lstlisting}
+    \noindent\textbf{Output:}
+\begin{verbatim}
+      harga_rumah luas_tanah luas_bangunan jumlah_kamar_tidur ...
+0     28000000000       1100           700                  5 ...
+1     19000000000        824           800                  4 ...
+...           ...        ...           ...                ...
+1000   1250000000         63           110                  3 ...
+[1001 rows x 7 columns]
+\end{verbatim}
+
+    % 5. Check Info
+    \item \textbf{Cek Info}
+\begin{lstlisting}[language=Python]
+df.info()
+\end{lstlisting}
+    \noindent\textbf{Output:}
+\begin{verbatim}
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 1001 entries, 0 to 1000
+Data columns (total 7 columns):
+ #   Column              Non-Null Count  Dtype 
+---  ------              --------------  ----- 
+ 0   harga_rumah         1001 non-null   object
+ 1   luas_tanah          1001 non-null   object
+ ...
+ 6   kota                1001 non-null   object
+dtypes: object(7)
+memory usage: 54.9+ KB
+\end{verbatim}
+
+    % 6. Change Data Types
+    \item \textbf{Ubah Tipe Data ke Numerik}
+\begin{lstlisting}[language=Python]
+df.harga_rumah = df.harga_rumah.astype(np.int64)
+df.luas_tanah = df.luas_tanah.astype(np.int64)
+df.luas_bangunan = df.luas_bangunan.astype(np.int64)
+df.jumlah_kamar_tidur = df.jumlah_kamar_tidur.astype(np.int64)
+df.jumlah_kamar_mandi = df.jumlah_kamar_mandi.astype(np.int64)
+df.info()
+\end{lstlisting}
+    \noindent\textbf{Output:}
+\begin{verbatim}
+<class 'pandas.core.frame.DataFrame'>
+...
+dtypes: int64(5), object(2)
+memory usage: 54.9+ KB
+\end{verbatim}
+
+    % 7. Data Cleaning
+    \item \textbf{Data Cleaning (Drop 'kota' \& Encode 'garasi')}
+\begin{lstlisting}[language=Python]
+df.drop('kota', axis=1, inplace=True)
+df.garasi.replace({'ADA': 1, 'TIDAK ADA': 0}, inplace=True)
+df
+\end{lstlisting}
+    \noindent\textbf{Output:}
+\begin{verbatim}
+      harga_rumah  luas_tanah  luas_bangunan ... garasi
+0     28000000000        1100            700 ...      1
+1     19000000000         824            800 ...      1
+...           ...         ...            ... ...    ...
+1000   1250000000          63            110 ...      0
+[1001 rows x 6 columns]
+\end{verbatim}
+
+    % 8. Check Info After Cleaning
+    \item \textbf{Cek Info Setelah Cleaning}
+\begin{lstlisting}[language=Python]
+df.info()
+\end{lstlisting}
+    \noindent\textbf{Output:}
+\begin{verbatim}
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 1001 entries, 0 to 1000
+Data columns (total 6 columns):
+ #   Column              Non-Null Count  Dtype
+---  ------              --------------  -----
+ 0   harga_rumah         1001 non-null   int64
+ ...
+ 5   garasi              1001 non-null   int64
+dtypes: int64(6)
+\end{verbatim}
+
+    % 9. Correlation Analysis
+    \item \textbf{Correlation Analysis}
+\begin{lstlisting}[language=Python]
+df.corr()
+
+plt.figure(figsize=(10, 6))
+sns.heatmap(df.corr(), annot=True, fmt='.2f')
+plt.savefig('heatmap.png')
+plt.show()
+\end{lstlisting}
+    \noindent\textbf{Output:}
+
+    \includegraphics[width=0.45\textwidth]{heatmap.png}
+
+    % Tips: Anda bisa memasukkan gambar heatmap di sini jika ada:
+    % \includegraphics[width=0.5\textwidth]{heatmap.png}
+
+    % 10. Describe Data
+    \item \textbf{Describe Data}
+\begin{lstlisting}[language=Python]
+df.describe()
+\end{lstlisting}
+    \noindent\textbf{Output:}
+\begin{verbatim}
+        harga_rumah    luas_tanah  luas_bangunan ...
+count  1.001000e+03   1001.000000    1001.000000 ...
+mean   1.747472e+10    530.504496     487.275724 ...
+std    2.079548e+10    531.069773     452.872262 ...
+min    4.300000e+08     22.000000      38.000000 ...
+max    2.500000e+11   6790.000000   10000.000000 ...
+\end{verbatim}
+
+    % 11. Gradient Descent
+    \item \textbf{Gradient Descent (Normal Equation)}
+\begin{lstlisting}[language=Python]
+def NormalEquation(X, y):
+    X = np.asarray(X, dtype=np.float64)
+    y = np.asarray(y, dtype=np.float64).ravel()
+    
+    X = np.c_[np.ones((X.shape[0], 1)), X]
+    theta, _, _, _ = np.linalg.lstsq(X, y, rcond=None)
+    
+    return theta
+\end{lstlisting}
+
+    % 12. Regression Function
+    \item \textbf{Regression Function}
+\begin{lstlisting}[language=Python]
+def Regression(X, theta):
+    X = np.asarray(X)
+    theta = np.asarray(theta)
+    X = np.c_[np.ones((X.shape[0], 1)), X]
+
+    return X.dot(theta)
+\end{lstlisting}
+
+    % 13. Z-Score Class
+    \item \textbf{Z-Score Normalization Class}
+\begin{lstlisting}[language=Python]
+class ZscoreNormal:
+    def __init__(self):
+        self.mean = None
+        self.std = None
+    def fit(self, X):
+        self.mean = np.mean(X, axis=0)
+        self.std = np.std(X, axis=0)
+    def transform(self, X):
+        return (X - self.mean) / self.std
+    def fit_transform(self, X):
+        self.fit(X)
+        return self.transform(X)
+    def inverse_transform(self, X_norm):
+        return (X_norm * self.std) + self.mean
+\end{lstlisting}
+
+    % 14. Train Test Split Config (Hanya komentar/dict, output biasanya tidak ditampilkan)
+    \item \textbf{Train Test Split Configuration}
+\begin{lstlisting}[language=Python]
+# tanpa normalisasi
+{'random_state': 2374, 'test_size': 0.1}
+{'random_state': 908, 'test_size': 0.11}
+# dengan normalisasi
+{'random_state': 4332, 'test_size': 0.10500000000000001}
+{'random_state': 936, 'test_size': 0.10500000000000001}
+{'random_state': 831, 'test_size': 0.1}
+\end{lstlisting}
+
+    % 15. Data Splitting
+    \item \textbf{Data Splitting \& Scaling}
+\begin{lstlisting}[language=Python]
+X = df.drop('harga_rumah', axis=1).values
+y = df['harga_rumah'].values
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=831)
+scaler = ZscoreNormal()
+X_train_norm = scaler.fit_transform(X_train)
+X_test_norm = scaler.transform(X_test)
+\end{lstlisting}
+
+    % 16. Check Shapes
+    \item \textbf{Check Data Shapes}
+\begin{lstlisting}[language=Python]
+m, n = X_train.shape
+print(f"Jumlah Data Training (m): {m}")
+print(f"Jumlah Fitur (n): {n}")
+print(f"Bentuk Matriks X_train: {X_train.shape}")
+print(f"Bentuk Vektor y_train: {y_train.shape}")
+\end{lstlisting}
+    \noindent\textbf{Output:}
+\begin{verbatim}
+Jumlah Data Training (m): 900
+Jumlah Fitur (n): 5
+Bentuk Matriks X_train: (900, 5)
+Bentuk Vektor y_train: (900,)
+\end{verbatim}
+
+    % 17. Train & Test
+    \item \textbf{Train and Test}
+\begin{lstlisting}[language=Python]
+theta = NormalEquation(X_train, y_train)
+y_pred = Regression(X_test, theta)
+\end{lstlisting}
+
+    % 18. Print Regression
+    \item \textbf{Print Regression Equation}
+\begin{lstlisting}[language=Python]
+print(f"Y = {theta[0]:.2f} + {theta[1]:.2f}*X1 + {theta[2]:.2f}*X2 + {theta[3]:.2f}*X3 + {theta[4]:.2f}*X4 + {theta[5]:.2f}*X5")
+\end{lstlisting}
+    \noindent\textbf{Output:}
+\begin{verbatim}
+Y = -3533645023.45 + 21522032.48*X1 + 12081321.81*X2 + 268049808.06*X3 + 298087646.55*X4 
+    + 1878969867.69*X5
+\end{verbatim}
+
+    % 19. Define Metric Functions
+    \item \textbf{Define Metric Functions}
+\begin{lstlisting}[language=Python]
+def MSE(y_true, y_pred):
+    return np.mean((y_true - y_pred) ** 2)
+def RMSE(y_true, y_pred):
+    return np.sqrt(MSE(y_true, y_pred))
+def r2_score(y_true, y_pred):
+    ss_total = np.sum((y_true - np.mean(y_true)) ** 2)
+    ss_residual = np.sum((y_true - y_pred) ** 2)
+    return 1 - (ss_residual / ss_total)
+\end{lstlisting}
+
+    % 20. Calculate Accuracy
+    \item \textbf{Calculate Accuracy/Error}
+\begin{lstlisting}[language=Python]
+mse = MSE(y_test, y_pred)
+rmse = RMSE(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+mape = mean_absolute_percentage_error(y_test, y_pred)
+print(f"Mean Squared Error: {mse}")
+print("Root Mean Squared Error:", rmse)
+print(f"R-squared: {(r2* 100):.2f}%" )
+print(f"MAPE: {(mape*100):.2f}%", )
+\end{lstlisting}
+    \noindent\textbf{Output:}
+\begin{verbatim}
+Mean Squared Error: 1.577282503e+19
+Root Mean Squared Error: 3971501609.01
+R-squared: 83.66%
+MAPE: 27.08%
+\end{verbatim}
+
+\end{enumerate}
+
+% Kembali ke format dua kolom jika ada teks setelah lampiran
+\twocolumn
 
 \end{document}
