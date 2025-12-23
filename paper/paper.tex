@@ -74,18 +74,17 @@ Studi menunjukkan bahwa faktor dominan seperti luas tanah memiliki korelasi yang
 
 Tanpa adanya standarisasi perhitungan yang objektif, proses penaksiran harga sering kali terjebak pada subjektivitas. 
 Kurangnya pengetahuan dan informasi yang akurat mengenai tren pasar membuat pelaku transaksi sering mengalami kesulitan dalam menyepakati harga yang tepat \cite{Warjiyono2024}. 
-Oleh karena itu, diperlukan sebuah pendekatan berbasis data \textit{data-driven} yang mampu mengubah estimasi manual menjadi model matematika yang presisi untuk meminimalkan ketidakpastian tersebut.
+Oleh karena itu, diperlukan sebuah pendekatan berbasis data \textit{(data-driven)} yang mampu mengubah estimasi manual menjadi model matematika yang presisi untuk meminimalkan ketidakpastian tersebut.
 
 Sebagai solusi, penelitian ini menerapkan pendekatan Regresi Linear menggunakan metode numerik \textit{Normal Equation}. 
 Dalam teori pembelajaran mesin \textit{machine learning}, penyelesaian masalah regresi linear sering kali dilakukan menggunakan metode iteratif seperti \textit{Gradient Descent} yang memerlukan penentuan \textit{learning rate} dan iterasi berulang. 
-Namun, untuk dataset dengan ukuran yang wajar, \textit{Normal Equation} menawarkan pendekatan langsung \textit{direct method} yang lebih efisien \cite{Ng2022}. 
-Metode ini bekerja dengan menghitung solusi bentuk tertutup \textit{closed-form solution} melalui persamaan matriks $\theta = (X^T X)^{-1} X^T y$, yang menjamin ditemukannya nilai bobot optimal secara instan dalam satu langkah komputasi tanpa perlu proses \textit{looping} untuk meminimalkan \textit{cost function} secara bertahap.
+Namun, untuk dataset dengan ukuran yang wajar, \textit{Normal Equation} menawarkan pendekatan langsung \textit{(direct method)} yang lebih efisien \cite{Ng2022}. 
+Metode ini bekerja dengan menghitung solusi bentuk tertutup \textit{(closed-form solution)} melalui persamaan matriks $\theta = (X^T X)^{-1} X^T y$, yang menjamin ditemukannya nilai bobot optimal secara instan dalam satu langkah komputasi tanpa perlu proses \textit{looping} untuk meminimalkan \textit{cost function} secara bertahap.
 
 \subsection{Rumusan Masalah}
 Berdasarkan latar belakang permasalahan mengenai subjektivitas penentuan harga dan kompleksitas variabel properti, pertanyaan penelitian yang diajukan adalah:
 \begin{enumerate}
     \item Bagaimana memodelkan hubungan antara variabel fisik (seperti luas tanah dan bangunan) dengan harga properti di Jakarta Selatan untuk meminimalkan subjektivitas penaksiran harga?
-    \item Bagaimana efektivitas implementasi metode langsung \textit{direct method} Normal Equation dalam menyelesaikan persamaan Regresi Linear tanpa memerlukan proses iterasi \textit{non-iterative}?
     \item Seberapa akurat performa model prediksi yang dihasilkan berdasarkan metrik evaluasi numerik seperti R-squared ($R^2$), RMSE, dan MAPE terhadap data aktual?
 \end{enumerate}
 
@@ -93,8 +92,7 @@ Berdasarkan latar belakang permasalahan mengenai subjektivitas penentuan harga d
 Tujuan utama dari penelitian ini adalah:
 \begin{enumerate}
     \item Mengidentifikasi signifikansi variabel-variabel fisik properti yang menjadi Faktor yang paling berpengaruh dalam pembentukan harga pasar di wilayah Jakarta Selatan.
-    \item Menerapkan algoritma Normal Equation untuk menghasilkan Perhitungan langsung yang mampu memprediksi harga rumah secara instan dan efisien secara komputasi.
-    \item Mengukur tingkat presisi model matematika yang dibangun dalam menentukan harga wajar properti sebagai panduan yang wajar bagi penjual maupun pembeli.
+    \item Mengukur tingkat presisi model matematika yang dibangun dalam menentukan harga wajar properti sebagai panduan bagi penjual maupun pembeli.
 \end{enumerate}
 
 \subsection{Batasan Masalah}
@@ -173,7 +171,6 @@ Sampel data mentah ditampilkan pada Tabel \ref{tab:rawdata} yang menunjukkan lim
         1100 & 700 & 5 & 6 & 1 & 28.0 \\
         824 & 800 & 4 & 4 & 1 & 19.0 \\
         500 & 400 & 4 & 3 & 1 & 4.7 \\
-        251 & 300 & 5 & 4 & 1 & 4.9 \\
         1340 & 575 & 4 & 5 & 1 & 28.0 \\
         \bottomrule
     \end{tabular}
@@ -185,7 +182,7 @@ Sampel data mentah ditampilkan pada Tabel \ref{tab:rawdata} yang menunjukkan lim
 \subsection{Pra-pemrosesan Data}
 Sebelum data dapat diproses oleh algoritma numerik, dilakukan serangkaian tahapan pembersihan dan transformasi:
 \begin{enumerate}
-    \item Pembersihan Data: Memastikan tidak ada nilai yang hilang atau duplikasi baris yang dapat membiaskan hasil komputasi.
+    \item Pembersihan Data: Langkah ini dilakukan untuk menghapus duplikasi dan menangani data kosong. Selain itu, penelitian ini memutuskan untuk mempertahankan data pencilan (outliers) berupa rumah dengan harga ekstrem (di atas Rp 50 Miliar). Tujuannya adalah agar model dapat mempelajari rentang harga pasar Jakarta Selatan secara utuh dan realistis, meskipun keputusan ini berpotensi meningkatkan rata-rata error pada hasil akhir.
     \item Konversi Tipe Data: Memastikan seluruh kolom fitur memiliki tipe data numerik yang tepat.
     \item Encoding Variabel Kategorikal: Fitur Garasi dikonversi menjadi biner dengan nilai 1 untuk ada dan 0 untuk tidak ada.
     \item Seleksi Fitur: Kolom KOTA dihapus karena bernilai konstant. Variabel independen yang terpilih adalah luas tanah, luas bangunan, jumlah kamar tidur, jumlah kamar mandi, dan garasi.
@@ -197,25 +194,6 @@ Untuk menguji kemampuan generalisasi model, dataset dibagi menjadi dua bagian:
     \item Data Latih: Sebesar 90 persen dari total data (900 data), digunakan untuk menghitung parameter model.
     \item Data Uji: Sebesar 10 persen dari total data (101 data), digunakan untuk validasi kinerja model pada data yang belum pernah dilihat sebelumnya.
 \end{itemize}
-
-\subsection{Normalisasi Fitur (Z-Score)}
-Dalam dataset properti, terdapat disparitas skala yang signifikan antar fitur. Sebagai contoh, variabel \textit{Luas Tanah} memiliki rentang nilai dalam ratusan hingga ribuan ($m^2$), sedangkan variabel \textit{Jumlah Kamar} hanya berkisar pada satuan digit (1-10 unit). Perbedaan skala ini dapat menyebabkan ketidakstabilan numerik dalam operasi matriks dan dominasi varians oleh fitur berskala besar.
-
-Untuk mengatasi hal tersebut, penelitian ini menerapkan teknik standardisasi data menggunakan metode \textit{Z-Score}. Teknik ini mentransformasi distribusi data pada setiap fitur numerik sehingga memiliki rata-rata ($\mu$) sebesar 0 dan standar deviasi ($\sigma$) sebesar 1. Formulasi matematis untuk normalisasi adalah sebagai berikut:
-
-\begin{equation}
-    z_{ij} = \frac{x_{ij} - \mu_j}{\sigma_j}
-\end{equation}
-
-Dimana:
-\begin{itemize}
-    \item $z_{ij}$ adalah nilai fitur ke-$j$ pada sampel ke-$i$ yang telah dinormalisasi.
-    \item $x_{ij}$ adalah nilai asli fitur sebelum normalisasi.
-    \item $\mu_j$ adalah rata-rata (\textit{mean}) dari seluruh data pada fitur $j$.
-    \item $\sigma_j$ adalah standar deviasi dari seluruh data pada fitur $j$.
-\end{itemize}
-
-Proses normalisasi ini diterapkan pada variabel independen sebelum data diproses ke dalam persamaan Normal Equation.
 
 \subsection{Implementasi Normal Equation dengan NumPy}
 Inti dari penelitian ini adalah implementasi algoritma Normal Equation menggunakan operasi matriks murni dengan NumPy. Berikut adalah implementasi kode Python:
@@ -264,7 +242,7 @@ Untuk mengukur keberhasilan model komputasi, digunakan beberapa metrik statistik
 \section{Hasil dan Pembahasan}
 
 \subsection{Analisis Hubungan Antar Data}
-Sebelum masuk ke perhitungan matematika yang rumit, langkah pertama adalah melihat hubungan antara fitur rumah (seperti luas tanah) dengan harganya. Hubungan ini digambarkan melalui peta warna (\textit{heatmap}) pada Gambar \ref{fig:heatmap}.
+Sebelum masuk ke perhitungan matematika yang rumit, langkah pertama adalah melihat hubungan antara fitur rumah (seperti luas tanah) dengan harganya. Hubungan ini digambarkan melalui Heatmap pada Gambar \ref{fig:heatmap}.
 
 \begin{figure}[htbp]
     \centering
@@ -273,10 +251,10 @@ Sebelum masuk ke perhitungan matematika yang rumit, langkah pertama adalah melih
     \label{fig:heatmap}
 \end{figure}
 
-Pada Gambar \ref{fig:heatmap}, warna kotak pertemuan antara \textbf{Luas Tanah (LT)} dan Harga sangat terang. Ini artinya, luas tanah adalah faktor penentu paling utama ($r \approx 0.74$). Semakin luas tanahnya, hampir pasti harganya semakin mahal. Pengaruh ini lebih besar dibandingkan jumlah kamar tidur atau kamar mandi. Fakta ini menegaskan bahwa di Jakarta Selatan, "tanah" lebih berharga daripada "bangunan". Karena hubungannya berbentuk garis lurus (linear) yang kuat, maka metode \textit{Normal Equation} sangat cocok digunakan.
+Pada Gambar \ref{fig:heatmap}, warna kotak pertemuan antara \textbf{Luas Tanah (LT)} dan Harga sangat terang. Ini artinya, luas tanah adalah faktor penentu paling utama ($r \approx 0.74$). Semakin luas tanahnya, memiliki kecenderungan kuat harganya semakin mahal. Pengaruh ini lebih besar dibandingkan jumlah kamar tidur atau kamar mandi. Fakta ini menegaskan bahwa di Jakarta Selatan, "tanah" lebih berharga daripada "bangunan". Karena hubungannya berbentuk garis lurus (linear) yang kuat, maka metode \textit{Normal Equation} sangat cocok digunakan.
 
 \subsection{Seberapa Akurat Model Memprediksi?}
-Model matematika yang telah dibuat kemudian diuji kemampuannya menebak harga pada 101 data rumah baru. Hasil rapor kinerjanya dapat dilihat pada Tabel \ref{tab:evaluasi}.
+Model matematika yang telah dibuat kemudian diuji kemampuannya Prediksi harga pada 101 data rumah baru. Hasil Hasil evaluasi model dapat dilihat pada Tabel \ref{tab:evaluasi}.
 
 \begin{table}[htbp]
     \caption{Hasil Pengukuran Akurasi}
@@ -296,22 +274,22 @@ Model matematika yang telah dibuat kemudian diuji kemampuannya menebak harga pad
     \end{center}
 \end{table}
 
-Nilai $R^2$ sebesar 0.837 bisa diartikan bahwa model ini "mengerti" sekitar 83.7\% pola harga di pasar. Sisanya (sekitar 16\%) dipengaruhi oleh faktor lain yang tidak ada di data, seperti lokasi strategis atau desain rumah. Untuk melihat ketepatannya secara visual, perhatikan Gambar \ref{fig:pred_vs_act}.
+Nilai $R^2$ sebesar 0.837 bisa diartikan bahwa model ini menjelaskan sekitar 83.7\% pola harga di pasar. Sisanya (sekitar 16\%) dipengaruhi oleh faktor lain yang tidak ada di data, seperti lokasi strategis atau desain rumah. Untuk melihat ketepatannya secara visual, perhatikan Gambar \ref{fig:pred_vs_act}.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.45\textwidth]{perbandingan_harga_aktual_vs_prediksi.png}
-    \caption{Grafik Tebakan vs Harga Asli. Titik biru yang menempel pada garis merah berarti tebakannya tepat.}
+    \caption{Grafik Prediksi vs Harga Asli. Titik biru yang menempel pada garis merah berarti Prediksinya    tepat.}
     \label{fig:pred_vs_act}
 \end{figure}
 
-Pada Gambar \ref{fig:pred_vs_act}, terlihat titik-titik biru berkumpul rapat di garis merah untuk rumah dengan harga di bawah 30 Miliar. Ini berarti tebakan model sangat jitu untuk rumah kelas menengah. Namun, untuk rumah mewah (di atas 50 Miliar), titik-titiknya mulai menyebar menjauhi garis. Artinya, tebakan model mulai meleset pada rumah-rumah yang sangat mahal.
+Pada Gambar \ref{fig:pred_vs_act}, terlihat titik-titik biru berkumpul rapat di garis merah untuk rumah dengan harga di bawah 30 Miliar. Ini berarti Prediksi model sangat Akurat untuk rumah kelas menengah. Namun, untuk rumah mewah (di atas 50 Miliar), titik-titiknya mulai menyebar menjauhi garis. Artinya, Prediksi model mulai meleset pada rumah-rumah yang sangat mahal.
 
 \subsection{Analisis Kesalahan (Error)}
-Kita perlu membedah "kenapa" model bisa salah tebak. Analisis ini disebut analisis residual atau analisis sisaan error.
+Kita perlu membedah "kenapa" model bisa mengalami kesalahan prediksi. Analisis ini disebut analisis residual atau analisis sisaan error.
 
 \subsubsection{Pola Kesalahan yang Melebar}
-Gambar \ref{fig:residual} memperlihatkan selisih antara harga asli dan harga tebakan model.
+Gambar \ref{fig:residual} memperlihatkan selisih antara harga asli dan harga Prediksi model.
 
 \begin{figure}[htbp]
     \centering
@@ -320,15 +298,11 @@ Gambar \ref{fig:residual} memperlihatkan selisih antara harga asli dan harga teb
     \label{fig:residual}
 \end{figure}
 
-Gambar ini menjelaskan fenomena menarik: bentuk grafiknya menyerupai corong yang melebar ke kanan. Dalam bahasa statistik, ini disebut \textbf{heteroskedastisitas}. Bahasa sederhananya:
-\begin{itemize}
-    \item Jika memprediksi rumah murah, model sangat percaya diri dan kesalahannya kecil.
-    \item Jika memprediksi rumah mewah, model mulai bingung dan rentang kesalahannya menjadi sangat besar.
-\end{itemize}
-Hal ini wajar, karena rumah mewah seringkali memiliki nilai seni atau fasilitas unik yang sulit dihitung hanya dengan rumus matematika standar.
+Dari grafik penyebaran error , terlihat pola yang menarik: model matematika ini ternyata sangat sangat efektif Prediksi harga rumah kelas menengah (di bawah Rp 30 Miliar) dengan akurat.
+Namun, ketika diminta Prediksi harga rumah super-mewah, Prediksi mulai meleset cukup jauh. Hal ini wajar, karena harga rumah mewah seringkali ditentukan oleh faktor 'gengsi', nilai seni, atau keunikan desain yang tidak bisa dihitung hanya dengan rumus luas tanah dan bangunan semata.
 
 \subsubsection{Keseimbangan Kesalahan}
-Terakhir, kita melihat apakah model cenderung menebak "ketinggian" atau "kerendahan" melalui Gambar \ref{fig:hist_error}.
+Terakhir, kita melihat apakah model cenderung Prediksi "ketinggian" atau "kerendahan" melalui Gambar \ref{fig:hist_error}.
 
 \begin{figure}[htbp]
     \centering
@@ -337,10 +311,49 @@ Terakhir, kita melihat apakah model cenderung menebak "ketinggian" atau "kerenda
     \label{fig:hist_error}
 \end{figure}
 
-Meskipun kesalahannya membesar pada rumah mewah, Gambar \ref{fig:hist_error} menunjukkan kurva berbentuk lonceng sempurna yang puncaknya ada di angka 0. Ini kabar baik. Artinya, kesalahan model bersifat acak dan seimbang (adil). Model tidak memiliki "penyakit" suka melebih-lebihkan harga atau merendahkan harga secara sengaja. Kadang tebakan sedikit di atas, kadang sedikit di bawah, tapi rata-ratanya pas.
+Meskipun kesalahannya membesar pada rumah mewah, Gambar \ref{fig:hist_error} menunjukkan kurva berbentuk lonceng sempurna yang puncaknya ada di angka 0. Ini kabar baik. Artinya, kesalahan model bersifat acak dan seimbang (adil). Model tidak memiliki Kecenderungan salah suka melebih-lebihkan harga atau merendahkan harga secara sengaja. Kadang Prediksi sedikit di atas, kadang sedikit di bawah, tapi rata-ratanya pas.
 
-\subsection{Contoh Nyata Perbandingan Harga}
-Untuk membuktikan analisis di atas, mari kita lihat contoh acak pada Tabel \ref{tab:sampel}.
+\subsection{Interpretasi Model dan Simulasi Prediksi}
+
+Salah satu keunggulan utama algoritma Regresi Linear adalah transparansi modelnya (\textit{white-box model}). Tidak seperti \textit{Deep Learning} yang seringkali sulit diinterpretasikan, keputusan model ini dapat diturunkan menjadi persamaan matematika yang jelas. 
+
+Berdasarkan hasil pelatihan (\textit{training}) menggunakan Python, solusi numerik menggunakan metode \textit{Normal Equation} menghasilkan vektor parameter optimal $\hat{\boldsymbol{\theta}}$. Model prediksi harga rumah ($\hat{y}$) dapat dituliskan kembali dalam bentuk persamaan linear sebagai berikut:
+
+\begin{equation}
+    \label{eq:final_model_theta}
+    \begin{split}
+    \hat{y} &= \theta_0 + \theta_1 \cdot x_{\text{Luas tanah}} + \theta_2 \cdot x_{\text{Luas Bangunan}} \\
+    &\quad + \theta_3 \cdot x_{\text{Kamar Tidur}} + \theta_4 \cdot x_{\text{Kamar Mandi}} \\
+    &\quad + \theta_5 \cdot x_{\text{Garasi}}
+    \end{split}
+\end{equation}
+
+\noindent Dimana nilai parameter $\boldsymbol{\theta}$ yang diperoleh dari hasil komputasi adalah:
+\begin{itemize}
+    \item \textbf{Intersep ($\theta_0$):} -3533645023.45 atau -3.53 Miliar.
+    \item \textbf{Koefisien Luas Tanah ($\theta_1$):} 21522032.48 atau 21.52 Juta. 
+    \item \textbf{Koefisien Luas Bangunan ($\theta_2$):} 12081321.81 atau 12.08 Juta. 
+    \item \textbf{Koefisien Kamar Tidur ($\theta_3$):} 268049808.06 atau 268.05 Juta.
+    \item \textbf{Koefisien Kamar Mandi ($\theta_4$):} 298087646.55 atau 298.09 Juta. 
+    \item \textbf{Koefisien Garasi ($\theta_5$):} 1878969867.69 atau 1.88 Miliar.
+\end{itemize}
+
+\subsubsection{Simulasi Perhitungan Manual}
+Untuk memvalidasi akurasi persamaan di atas, dilakukan perhitungan manual pada satu sampel data uji (Indeks ke-5 pada data test) dengan spesifikasi: 
+Luas Tanah 1186 $m^2$, 900 Luas Bangunan $m^2$, 6 Kamar Tidur, dan 5 Kamar Mandi, Memiliki Garasi dengan harga Rp 34 M.
+
+\begin{align*}
+    \hat{y} &= -3533645023.45 + (21522032.48 \cdot 1186) \\
+            &\quad + (12081321.81 \cdot 900) + (268049808.06 \cdot 6) \\
+            &\quad + (298087646.55 \cdot 5) + (1878969867.69 \cdot 1) \\[10pt]
+    \hat{y} &= 37842382073.88 \\
+            &\approx \text{Rp } 37.84 \text{ Miliar}
+\end{align*}
+
+Bandingkan hasil hitungan manual ini dengan harga aktual pasar sebesar \textbf{34.00 Miliar}. Terdapat selisih prediksi sebesar \textbf{3.84 Miliar} (sekitar 11\%). Hal ini mengonfirmasi analisis residual sebelumnya bahwa model cenderung memiliki varians error yang lebih besar pada segmen rumah mewah (harga tinggi) dibandingkan rumah kelas menengah, namun estimasi ini masih memberikan gambaran taksiran nilai aset yang cukup representatif.
+
+\subsubsection{Validasi pada Data Sampel Lain}
+Penerapan persamaan tersebut secara massal pada data uji lainnya dapat dilihat pada Tabel \ref{tab:sampel}. Tabel ini memperlihatkan perbandingan antara harga asli (\textit{Ground Truth}) dengan harga prediksi model.
 
 \begin{table}[htbp]
     \caption{Contoh Asli vs Prediksi}
@@ -348,7 +361,7 @@ Untuk membuktikan analisis di atas, mari kita lihat contoh acak pada Tabel \ref{
     \begin{small}
     \begin{tabular}{cccc}
         \toprule
-        Luas ($m^2$) & Harga Asli (M) & Tebakan (M) & Selisih (M) \\
+        Luas ($m^2$) & Harga Asli (M) & Prediksi (M) & Selisih (M) \\
         \midrule
         216 & 18.00 & 9.90 & +8.10 \\
         123 & 2.99 & 3.01 & -0.02 \\
@@ -367,19 +380,17 @@ Untuk membuktikan analisis di atas, mari kita lihat contoh acak pada Tabel \ref{
     \end{center}
 \end{table}
 
-baris kedua (Luas 123 $m^2$): harga asli 2.99 M, tebakan model 3.01 M. Selisihnya sangat tipis, nyaris sempurna.
-Namun, baris pertama (Luas 216 $m^2$): harga asli sangat tinggi (18 M), tapi model hanya menebak 9.9 M. Selisihnya mencapai 8 Miliar. Ini membuktikan bahwa untuk rumah kecil yang harganya tidak wajar (mungkin karena lokasi sangat premium), model "kalah" karena hanya mengandalkan luas tanah sebagai patokan utama.
+baris kedua (Luas 123 $m^2$): harga asli 2.99 M, Prediksi model 3.01 M. Selisihnya sangat tipis, nyaris sempurna.
+Namun, baris pertama (Luas 216 $m^2$): harga asli sangat tinggi (18 M), tapi model hanya Prediksi 9.9 M. Selisihnya mencapai 8 Miliar. Ini membuktikan bahwa untuk rumah kecil yang harganya tidak wajar (mungkin karena lokasi sangat premium), model "kalah" karena hanya mengandalkan luas tanah sebagai patokan utama.
 
 % --- BAB V ---
 \section{Kesimpulan}
 Berdasarkan penelitian yang telah dilakukan, berikut adalah intisari dari temuan penulis mengenai prediksi harga rumah di Jakarta Selatan:
 
 \begin{enumerate}
-    \item Tanah Adalah Kunci Objektivitas: Penelitian ini menegaskan bahwa harga rumah tidak terbentuk secara acak. Penulis menemukan bahwa \textit{Luas Tanah} memegang peranan paling dominan ($r \approx 0.74$) dalam menentukan harga. Artinya, penggunaan rumus matematika berbasis data fisik dapat menjadi solusi ampuh untuk menghilangkan ``permainan harga'' atau subjektivitas yang sering membingungkan penjual dan pembeli.
+    \item Tanah Adalah Kunci Objektivitas: Penelitian ini menegaskan bahwa harga rumah tidak terbentuk secara acak. Penulis menemukan bahwa \textit{Luas Tanah} memegang peranan paling dominan ($r \approx 0.74$) dalam menentukan harga. Artinya, penggunaan rumus matematika berbasis data fisik dapat menjadi solusi ampuh untuk menghilangkan Subjektivitas penentuan harga atau subjektivitas yang sering membingungkan penjual dan pembeli.
     
-    \item Keunggulan Perhitungan Langsung: Dari sisi teknis, penulis membuktikan bahwa metode \textit{Normal Equation} bekerja layaknya ``jalan pintas'' yang cerdas. Berbeda dengan metode lain yang harus menebak-nebak parameter berkali-kali (iterasi), metode ini mampu menemukan rumus harga terbaik hanya dalam satu langkah perhitungan matriks. Ini menjadikannya solusi yang sangat cepat dan ringkas untuk mengolah ribuan data properti.
-    
-    \item Akurasi dan Batas Kemampuan: Model yang dibangun berhasil memahami pola harga pasar dengan cukup baik (akurasi 83.7\%). Model ini sangat terpercaya untuk memprediksi harga rumah kelas menengah. Namun, penulis menemukan batasan wajar: model mulai ``kewalahan'' saat memprediksi rumah super-mewah. Hal ini terjadi karena harga rumah mewah seringkali dipengaruhi oleh nilai seni atau gengsi yang tidak bisa diukur hanya dengan meteran luas tanah.
+    \item Akurasi dan Batas Kemampuan: Model yang dibangun berhasil memahami pola harga pasar dengan cukup baik (akurasi 83.7\%). Model ini Memiliki tingkat akurasi tinggi untuk memprediksi harga rumah kelas menengah. Namun, penulis menemukan batasan wajar: model mulai Mengalami penurunan performa saat memprediksi rumah super-mewah. Hal ini terjadi karena harga rumah mewah seringkali dipengaruhi oleh nilai seni atau gengsi yang tidak bisa diukur hanya dengan Variabel luas tanah.
 \end{enumerate}
 
 % --- Daftar Pustaka ---
@@ -581,7 +592,7 @@ max    2.500000e+11   6790.000000   10000.000000 ...
 \end{verbatim}
 
     % 11. Gradient Descent
-    \item \textbf{Gradient Descent (Normal Equation)}
+    \item \textbf{Normal Equation}
 \begin{lstlisting}[language=Python]
 def NormalEquation(X, y):
     X = np.asarray(X, dtype=np.float64)
@@ -603,48 +614,13 @@ def Regression(X, theta):
 
     return X.dot(theta)
 \end{lstlisting}
-
-    % 13. Z-Score Class
-    \item \textbf{Z-Score Normalization Class}
-\begin{lstlisting}[language=Python]
-class ZscoreNormal:
-    def __init__(self):
-        self.mean = None
-        self.std = None
-    def fit(self, X):
-        self.mean = np.mean(X, axis=0)
-        self.std = np.std(X, axis=0)
-    def transform(self, X):
-        return (X - self.mean) / self.std
-    def fit_transform(self, X):
-        self.fit(X)
-        return self.transform(X)
-    def inverse_transform(self, X_norm):
-        return (X_norm * self.std) + self.mean
-\end{lstlisting}
-
-    % 14. Train Test Split Config (Hanya komentar/dict, output biasanya tidak ditampilkan)
-    \item \textbf{Train Test Split Configuration}
-\begin{lstlisting}[language=Python]
-# tanpa normalisasi
-{'random_state': 2374, 'test_size': 0.1}
-{'random_state': 908, 'test_size': 0.11}
-# dengan normalisasi
-{'random_state': 4332, 'test_size': 0.10500000000000001}
-{'random_state': 936, 'test_size': 0.10500000000000001}
-{'random_state': 831, 'test_size': 0.1}
-\end{lstlisting}
-
     % 15. Data Splitting
-    \item \textbf{Data Splitting \& Scaling}
+    \item \textbf{Data Splitting}
 \begin{lstlisting}[language=Python]
 X = df.drop('harga_rumah', axis=1).values
 y = df['harga_rumah'].values
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=831)
-scaler = ZscoreNormal()
-X_train_norm = scaler.fit_transform(X_train)
-X_test_norm = scaler.transform(X_test)
 \end{lstlisting}
 
     % 16. Check Shapes
@@ -680,6 +656,31 @@ print(f"Y = {theta[0]:.2f} + {theta[1]:.2f}*X1 + {theta[2]:.2f}*X2 + {theta[3]:.
 \begin{verbatim}
 Y = -3533645023.45 + 21522032.48*X1 + 12081321.81*X2 + 268049808.06*X3 + 298087646.55*X4 
     + 1878969867.69*X5
+\end{verbatim}
+
+    \item \textbf{Prediksi Manual}
+\begin{lstlisting}[language=Python]
+def persamaan_linear_prediksi_rumah(X, theta):
+    return (theta[0] + 
+            theta[1] * X[0] + 
+            theta[2] * X[1] + 
+            theta[3] * X[2] + 
+            theta[4] * X[3] + 
+            theta[5] * X[4])
+X_contoh, y_contoh = X_test[5], y_test[5]
+y_contoh_pred = persamaan_linear_prediksi_rumah(X_contoh, theta)
+features = ['Luas Tanah', 'Luas Bangunan', 'Kamar Tidur', 'Kamar Mandi', 'Garasi']
+for i in range(len(X_contoh)):
+    print(f'{features[i]} = {X_contoh[i]}', end=', ')
+    if i == len(X_contoh) - 1:
+        print(f"\nHarga Rumah Aktual = Rp {(y_contoh/1_000_000_000)} M", )
+        print(f"Harga Rumah Prediksi = Rp {(y_contoh_pred)} atau Rp {(y_contoh_pred/1_000_000_000)} M")
+\end{lstlisting}
+    \noindent\textbf{Output:}
+\begin{verbatim}
+Luas Tanah = 1186, Luas Bangunan = 900, Kamar Tidur = 6, Kamar Mandi = 5, Garasi = 1, 
+Harga Rumah Aktual = Rp 34.0 M
+Harga Rumah Prediksi = Rp 37842382073.88126 atau Rp 37.84238207388126 m
 \end{verbatim}
 
     % 19. Define Metric Functions
